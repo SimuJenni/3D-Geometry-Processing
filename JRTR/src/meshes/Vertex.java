@@ -43,8 +43,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<Vertex> iteratorVV(){
-		//Implement this...
-		return null;
+		return new IteratorVV(anEdge);
 	}
 	
 	/**
@@ -52,9 +51,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<HalfEdge> iteratorVE(){
-		//Implement this...
-		return null;
-
+		return new IteratorVE(anEdge);
 	}
 	
 	/**
@@ -62,9 +59,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<Face> iteratorVF(){
-		//Implement this...
-		return null;
-
+		return new IteratorVF(anEdge);
 	}
 	
 	
@@ -108,5 +103,119 @@ public class Vertex extends HEElement{
 		}
 		return false;
 	}
+	
+	
+	
+	public final class IteratorVE implements Iterator<HalfEdge> {
+		
+		private HalfEdge first, actual;
+
+		public IteratorVE(HalfEdge anEdge) {
+			first = anEdge;
+			actual = null;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return actual == null || actual.opposite.next != first;
+		}
+
+		@Override
+		public HalfEdge next() {
+			if(!hasNext()){
+				throw new NoSuchElementException();
+			}
+			actual = (actual == null?
+					first:
+					actual.opposite.next);
+				
+			return actual;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		public Face face() {
+			return first.incident_f;
+		}
+	}
+	
+	public final class IteratorVV implements Iterator<Vertex> {
+		
+		private HalfEdge first, actual;
+
+		public IteratorVV(HalfEdge anEdge) {
+			first = anEdge;
+			actual = null;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return actual == null || actual.opposite.next != first;
+		}
+
+		@Override
+		public Vertex next() {
+			if(!hasNext()){
+				throw new NoSuchElementException();
+			}
+			actual = (actual == null?
+					first:
+					actual.opposite.next);
+				
+			return actual.end();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		public Face face() {
+			return first.incident_f;
+		}
+	}
+	
+	public final class IteratorVF implements Iterator<Face> {
+		
+		private HalfEdge first, actual;
+
+		public IteratorVF(HalfEdge anEdge) {
+			first = anEdge;
+			actual = null;
+		}
+
+		@Override
+		public boolean hasNext() {
+			while(actual!=null && actual.opposite.next.incident_f==null){
+				actual = actual.opposite.next;
+			}	
+			return actual == null || actual.opposite.next != first;
+		}
+
+		@Override
+		public Face next() {
+			if(!hasNext()){
+				throw new NoSuchElementException();
+			}
+			actual = (actual == null?
+					first:
+					actual.opposite.next);
+				
+			return actual.incident_f;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		public Face face() {
+			return first.incident_f;
+		}
+	}
+
 	
 }

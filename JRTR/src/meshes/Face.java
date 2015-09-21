@@ -28,9 +28,7 @@ public class Face extends HEElement {
 	}
 	
 	public Iterator<HalfEdge> iteratorFE(){
-		//Implement this
-
-		return null;
+		return new IteratorFE(anEdge);
 	}
 	
 	
@@ -55,9 +53,43 @@ public class Face extends HEElement {
 		
 	}
 	
+	public final class IteratorFE implements Iterator<HalfEdge> {
+		
+		private HalfEdge first, actual;
+
+		public IteratorFE(HalfEdge anEdge) {
+			first = anEdge;
+			actual = null;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return actual == null || actual.next != first;
+		}
+
+		@Override
+		public HalfEdge next() {
+			if(!hasNext()){
+				throw new NoSuchElementException();
+			}
+			actual = (actual == null?
+						first:
+						actual.next);
+			return actual;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		public Face face() {
+			return first.incident_f;
+		}
+	}
+	
 
 	public final class IteratorFV implements Iterator<Vertex> {
-		
 		
 		private HalfEdge first, actual;
 
