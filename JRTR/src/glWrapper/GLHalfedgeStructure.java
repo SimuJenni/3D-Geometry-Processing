@@ -7,20 +7,28 @@ import javax.media.opengl.GL;
 import javax.vecmath.Point3f;
 
 import meshes.Face;
+import meshes.HEData1d;
+import meshes.HEData3d;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import openGL.gl.GLDisplayable;
 import openGL.gl.GLRenderer;
 import openGL.gl.GLDisplayable.Semantic;
+import openGL.gl.interactive.GLUpdateable;
 import openGL.objects.Transformation;
 
-public class GLHalfedgeStructure extends GLDisplayable {
+public class GLHalfedgeStructure extends GLUpdateable {
 	
 	private HalfEdgeStructure halfEdgeStruct;
+	private HEData3d attributes3d;
+	ArrayList<Vertex> preVerts;
+
+	public boolean displayData;
 
 	public GLHalfedgeStructure(HalfEdgeStructure newHalfEdgeStruct) {
 		super(newHalfEdgeStruct.getVertices().size());
 		halfEdgeStruct = newHalfEdgeStruct;
+		preVerts = halfEdgeStruct.getVertices();
 		
 		//Add Vertices
 		float[] verts = new float[halfEdgeStruct.getVertices().size()*3];
@@ -36,7 +44,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		//to the position variable in the GL shaders, while arrays passed with the
 		//USERSPECIFIED semantic will be associated to the name passed in the last argument
 		//
-		this.addElement(verts, Semantic.POSITION , 3);
+		this.addElement(verts, Semantic.POSITION , 3, "position");
 		//Here the position coordinates are passed a second time to the shader as color
 		this.addElement(verts, Semantic.USERSPECIFIED , 3, "color");
 		
@@ -44,6 +52,34 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		this.addIndices(ind);
 		
 	}
+	
+	public GLHalfedgeStructure(HalfEdgeStructure newHalfEdgeStruct, HEData1d data) {
+		this(newHalfEdgeStruct);
+		ArrayList<Vertex> verts = newHalfEdgeStruct.getVertices();
+		float[] attr = new float[verts.size()];
+		for(int i=0; i<verts.size(); i++){
+			attr[i] = (float) data.get(verts.get(i));
+		}
+		this.addElement(attr, Semantic.USERSPECIFIED , 1, "attribute1d");
+	}
+	
+	public GLHalfedgeStructure(HalfEdgeStructure newHalfEdgeStruct, HEData3d data) {
+		this(newHalfEdgeStruct);
+		attributes3d = data;
+		add3dattr();
+	}
+	
+	private void add3dattr(){
+		ArrayList<Vertex> verts = halfEdgeStruct.getVertices();
+		float[] attr = new float[verts.size()*3];
+		for(int i=0; i<verts.size(); i++){
+			attr[i*3] = attributes3d.get(verts.get(i)).x;
+			attr[i*3+1] = attributes3d.get(verts.get(i)).y;
+			attr[i*3+2] = attributes3d.get(verts.get(i)).z;
+		}
+		this.addElement(attr, Semantic.USERSPECIFIED , 3, "attribute3d");
+	}
+
 
 	/**
 	 * Return the gl render flag to inform opengl that the indices/positions describe
@@ -69,6 +105,11 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		// uniform <type> name;
 		//where type is the appropriate type, e.g. float / vec3 / mat4 etc.
 		//this method is called at every rendering pass.
+		if(displayData)
+			glRenderContext.setUniform("displayData", 1);
+		else
+			glRenderContext.setUniform("displayData", 0);
+
 	}
 	
 	/**
@@ -100,6 +141,13 @@ public class GLHalfedgeStructure extends GLDisplayable {
 			verts[i++] = vertPos.y;
 			verts[i++] = vertPos.z;
 		}
+	}
+	
+	public void simpleSmooth(){
+		halfEdgeStruct.simpleSmooth();
+		float[] verts = this.getDataBuffer("position");
+		copyToArrayP3f( halfEdgeStruct.getVertices(), verts);
+		this.scheduleUpdate("position");
 	}
 
 }

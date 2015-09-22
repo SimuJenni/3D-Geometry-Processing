@@ -217,5 +217,9 @@ public class Vertex extends HEElement{
 		}
 	}
 
+	public void setPos(Point3f point3f) {
+		this.pos=point3f;
+	}
+
 	
 }

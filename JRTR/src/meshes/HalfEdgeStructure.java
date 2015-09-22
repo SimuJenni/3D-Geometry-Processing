@@ -258,6 +258,25 @@ public class HalfEdgeStructure {
 		this.enumerateVertices();
 		
 	}
+	
+	public void simpleSmooth(){
+		int numVerts = vertices.size();
+		ArrayList<Vertex> newVerts = new ArrayList<Vertex>();
+		for(int i=0; i<numVerts; i++){
+			Vertex v = vertices.get(i);
+			Point3f avgPos = new Point3f();
+			Iterator<Vertex> vertIt = v.iteratorVV();
+			int valence = 0;
+			while(vertIt.hasNext()){
+				avgPos.add(vertIt.next().getPos());
+				valence++;
+			}
+			avgPos.scale(1.0f/valence);
+			v.setPos(avgPos);
+			newVerts.add(v);
+		}
+		vertices = newVerts;
+	}
 
 
 /**

@@ -3,6 +3,7 @@ package openGL;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -47,6 +48,7 @@ public class MyDisplay extends JFrame implements ActionListener {
 	SimpleSceneManager sceneManager;
 	TrackballListener trackball;
 	ZoomListener zoomListener;
+	KeyListener keyListener;
 	
 	JPanel whatsOnDisplay;
 	
@@ -67,6 +69,8 @@ public class MyDisplay extends JFrame implements ActionListener {
 		//add trackball and zoom support
 		trackball = new TrackballListener(this);
 		zoomListener = new ZoomListener(sceneManager, this);
+		keyListener = new KeyBoardListener(sceneManager, this);
+		renderPanel.getCanvas().addKeyListener(keyListener);
 		renderPanel.getCanvas().addMouseListener(trackball);
 		renderPanel.getCanvas().addMouseMotionListener(trackball);
 		renderPanel.getCanvas().addMouseWheelListener(zoomListener);
