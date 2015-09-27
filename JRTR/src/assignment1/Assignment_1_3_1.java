@@ -17,7 +17,7 @@ import meshes.reader.ObjReader;
  * @author Alf
  *
  */
-public class Assignment_1_3 {
+public class Assignment_1_3_1 {
 
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh

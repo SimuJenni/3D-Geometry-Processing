@@ -1,10 +1,13 @@
 package assignment1;
 
 import glWrapper.GLHalfedgeStructure;
+import glWrapper.GLWireframeMesh;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import openGL.MyDisplay;
 import meshes.HEData3d;
@@ -20,15 +23,12 @@ import meshes.reader.ObjReader;
  * @author Alf
  *
  */
-public class Assignment_1_3_3 {
+public class Assignment_1_3_4 {
 	
-	// Added a keyboard-listener for this assignment:
-	// press "f" to schedule a smoothing iteration
-	// press "d" to show the initial mesh
 
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh
-		WireframeMesh m = ObjReader.read("./objs/bunny.obj", true);
+		WireframeMesh m = ObjReader.read("./objs/tiger.obj", true);
 
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		
@@ -44,9 +44,10 @@ public class Assignment_1_3_3 {
 		
 		// Store original positions in HEData3
 		HEData3d data = new HEData3d(hs);
+		ArrayList<Vector3f> normals = hs.simpleNormals();
 		ArrayList<Vertex> verts = hs.getVertices();
-		for(Vertex v:verts){
-			data.put(v, v.getPos());
+		for(int i=0; i<verts.size(); i++) {
+			data.put(verts.get(i), normals.get(i));
 		}
 		
 		MyDisplay disp = new MyDisplay();
@@ -54,11 +55,19 @@ public class Assignment_1_3_3 {
 		GLHalfedgeStructure glbunny = new GLHalfedgeStructure(hs, data);
 		
 		//choose the shader for the data
-		glbunny.configurePreferredShader("shaders/data3d.vert", 
-				"shaders/data3d.frag", 
-				"shaders/data3d.geom");
+		glbunny.configurePreferredShader("shaders/normalVisualizer.vert", 
+				"shaders/normalVisualizer.frag", 
+				"shaders/normalVisualizer.geom");
 		//add the data to the display
 		disp.addToDisplay(glbunny);
+		
+		//do the same but choose a different shader
+		GLWireframeMesh glbunny2 = new GLWireframeMesh(m);
+
+		glbunny2.configurePreferredShader("shaders/trimesh_flat.vert", 
+				"shaders/trimesh_flat.frag", 
+				"shaders/trimesh_flat.geom");
+		disp.addToDisplay(glbunny2);
 	}
 
 }

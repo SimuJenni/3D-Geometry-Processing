@@ -33,10 +33,14 @@ public class Face extends HEElement {
 	
 	
 	public Vector3f normal() {
-		//implement this
-		
-		throw new UnsupportedOperationException();
-		//return null;
+		Vector3f normal = new Vector3f();
+		Vector3f v1 = new Vector3f(anEdge.end().pos);
+		v1.sub(anEdge.start().pos);
+		Vector3f v2 = new Vector3f(anEdge.next.end().pos);
+		v2.sub(anEdge.next.start().pos);
+		normal.cross(v1, v2);
+		normal.normalize();
+		return normal;
 	}
 	
 	public String toString(){
