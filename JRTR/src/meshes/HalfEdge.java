@@ -1,5 +1,7 @@
 package meshes;
 
+import javax.vecmath.Vector3f;
+
 /**
  * Implementation of a half-edge for the {@link HalfEdgeStructure}
  * @author Alf
@@ -17,6 +19,8 @@ public class HalfEdge extends HEElement{
 	
 	/**the opposite, next and previous edge*/
 	HalfEdge opposite, next, prev;
+	
+	private Vector3f edgeVector;
 	
 	/**
 	 * Initialize a half-edge with the Face it belongs to (the face it is
@@ -119,6 +123,26 @@ public class HalfEdge extends HEElement{
 	
 	public String toString(){
 		return "( " + start().toString() + " --> " + end().toString() + ")";
+	}
+
+	public Vector3f getVector() {
+		if(edgeVector==null){
+			edgeVector = new Vector3f(this.end().getPos());
+			edgeVector.sub(this.start().getPos());
+		}
+		return edgeVector;
+	}
+
+	public float angleOppositeVertex() {
+		// Compute the angle by getting relevant vectors
+		Vector3f b2x_i = new Vector3f(getPrev().getVector());
+		Vector3f b2x_j = new Vector3f(getNext().getVector());
+		b2x_j.negate();
+		return b2x_i.angle(b2x_j);		
+	}
+
+	public Vertex oppositeVertx() {
+		return getNext().end();
 	}
 
 }

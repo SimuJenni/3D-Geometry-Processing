@@ -17,7 +17,6 @@ in vec4 position;
 in float attribute1d;
 
 //the positions passed to the geometry shader
-out vec4 position_g;
 out vec4 frag_color;
 
 
@@ -59,6 +58,7 @@ vec4 colormap(float x) {
     
     return vec4(r, g, b, 1.0);
 }
+
 
 void main()
 {

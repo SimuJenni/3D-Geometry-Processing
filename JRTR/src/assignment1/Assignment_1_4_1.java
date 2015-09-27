@@ -3,14 +3,19 @@ package assignment1;
 import glWrapper.GLHalfedgeStructure;
 import glWrapper.GLWireframeMesh;
 
+import java.awt.geom.Arc2D.Float;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import openGL.MyDisplay;
+import utils.VecMath;
+import meshes.HEData1d;
 import meshes.HEData3d;
+import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import meshes.WireframeMesh;
@@ -23,12 +28,17 @@ import meshes.reader.ObjReader;
  * @author Alf
  *
  */
-public class Assignment_1_3_4 {
+public class Assignment_1_4_1 {
 	
 
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh
-		WireframeMesh m = ObjReader.read("./objs/oneNeighborhood.obj", true);
+//		WireframeMesh m = ObjReader.read("./objs/triangle.obj", true);
+//		WireframeMesh m = ObjReader.read("./objs/bunny.obj", true);
+//		WireframeMesh m = ObjReader.read("./objs/oneNeighborhood.obj", true);
+//		WireframeMesh m = ObjReader.read("./objs/uglySphere.obj", true);
+		WireframeMesh m = ObjReader.read("./objs/teapot.obj", true);
+
 
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		
@@ -42,12 +52,12 @@ public class Assignment_1_3_4 {
 			return;
 		}
 		
-		// Store original positions in HEData3
-		HEData3d data = new HEData3d(hs);
-		ArrayList<Vector3f> normals = hs.simpleNormals();
+		HEData1d data = new HEData1d(hs);
 		ArrayList<Vertex> verts = hs.getVertices();
-		for(int i=0; i<verts.size(); i++) {
-			data.put(verts.get(i), normals.get(i));
+
+		for(Vertex v:verts){
+			float meanCurv = v.getMeanCurvature();
+			data.put(v, meanCurv);
 		}
 		
 		MyDisplay disp = new MyDisplay();
@@ -55,19 +65,11 @@ public class Assignment_1_3_4 {
 		GLHalfedgeStructure glbunny = new GLHalfedgeStructure(hs, data);
 		
 		//choose the shader for the data
-		glbunny.configurePreferredShader("shaders/normalVisualizer.vert", 
-				"shaders/normalVisualizer.frag", 
-				"shaders/normalVisualizer.geom");
+		glbunny.configurePreferredShader("shaders/data1dCurvature.vert", 
+				"shaders/data1dCurvature.frag", 
+				null);
 		//add the data to the display
 		disp.addToDisplay(glbunny);
-		
-		//do the same but choose a different shader
-		GLWireframeMesh glbunny2 = new GLWireframeMesh(m);
-
-		glbunny2.configurePreferredShader("shaders/trimesh_flat.vert", 
-				"shaders/trimesh_flat.frag", 
-				"shaders/trimesh_flat.geom");
-		disp.addToDisplay(glbunny2);
 	}
 
 }

@@ -9,7 +9,15 @@ import javax.vecmath.Vector3f;
 
 public class Face extends HEElement {
 
+	private class ObtuseInfo {
+		boolean isObtuse;
+		Vertex obtuseVertex;
+	}
+
+
 	private HalfEdge anEdge;
+	private ObtuseInfo optuseInfo;
+	
 	
 	public Face(){
 		anEdge = null;
@@ -128,5 +136,64 @@ public class Face extends HEElement {
 		}
 	}
 
+
+	public float voroniAreaForVertex(Vertex v) {
+		if(this.optuseInfo==null){
+			optuseInfo = checkObtuseness();
+		}
+		if(optuseInfo.isObtuse){
+			return optuseInfo.obtuseVertex==v ? area()/2 : area()/4;
+		} 
+		else {
+			HalfEdge e1 = edgeStartingWith(v);
+			HalfEdge e2 = edgeEndingWith(v);
+			float alpha = e2.angleOppositeVertex();
+			float beta = e1.angleOppositeVertex();
+			return (float) (e1.getVector().lengthSquared()/Math.tan(beta) +
+					e2.getVector().lengthSquared()/Math.tan(alpha))/8;
+		}
+		
+	}
+
+	private HalfEdge edgeEndingWith(Vertex v) {
+		Iterator<HalfEdge> eIter = iteratorFE();
+		while(eIter.hasNext()){
+			HalfEdge e = eIter.next();
+			if(e.end()==v){
+				return e;
+			}
+		}
+		return null;
+	}
+
+	private HalfEdge edgeStartingWith(Vertex v) {
+		Iterator<HalfEdge> eIter = iteratorFE();
+		while(eIter.hasNext()){
+			HalfEdge e = eIter.next();
+			if(e.start()==v){
+				return e;
+			}
+		}
+		return null;
+	}
+
+	private float area() {
+		Vector3f crossVec = new Vector3f();
+		crossVec.cross(anEdge.getVector(), anEdge.next.getVector());
+		return crossVec.length()/2;
+	}
+
+	private ObtuseInfo checkObtuseness() {
+		optuseInfo = new ObtuseInfo();
+		Iterator<HalfEdge> edgeIt = iteratorFE();
+		while(edgeIt.hasNext()){
+			HalfEdge e = edgeIt.next();
+			if(e.angleOppositeVertex()>Math.PI/2){
+				optuseInfo.isObtuse = true;
+				optuseInfo.obtuseVertex = e.oppositeVertx();
+			}
+		}
+		return optuseInfo;
+	}
 
 }

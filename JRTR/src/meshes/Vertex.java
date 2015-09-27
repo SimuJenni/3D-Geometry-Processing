@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Tuple3f;
+import javax.vecmath.Vector3f;
 
 
 /**
@@ -219,6 +220,36 @@ public class Vertex extends HEElement{
 
 	public void setPos(Point3f point3f) {
 		this.pos=point3f;
+	}
+
+
+	public float computeMixedArea() {
+		Iterator<Face> faceIt = iteratorVF();
+		float areaSum = 0;
+		while(faceIt.hasNext()){
+			Face face = faceIt.next();
+			areaSum += face.voroniAreaForVertex(this);
+		}
+		return areaSum;
+	}
+
+
+	public float getMeanCurvature() {
+		Iterator<HalfEdge> edgeIt = iteratorVE();
+		Vector3f laplacian = new Vector3f();
+		// Iterate over all outgoing edges
+		while(edgeIt.hasNext()){
+			HalfEdge e = edgeIt.next();
+			// Get v_i - v_j
+			Vector3f diffVec = new Vector3f(e.getOpposite().getVector());
+			// Get angles
+			float beta = e.angleOppositeVertex();
+			float alpha = e.getOpposite().angleOppositeVertex();
+			diffVec.scale((float) (1/Math.tan(alpha)+1/Math.tan(beta)));
+			laplacian.add(diffVec);
+		}
+		laplacian.scale(1/(2*computeMixedArea()));
+		return laplacian.length()*0.5f;
 	}
 
 	
