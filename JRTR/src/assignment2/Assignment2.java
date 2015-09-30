@@ -6,6 +6,8 @@ import glWrapper.GLHashtree;
 import glWrapper.GLHashtree_Vertices;
 import glWrapper.GLPointCloud;
 import meshes.PointCloud;
+import meshes.reader.ObjReader;
+import meshes.reader.PlyReader;
 import openGL.MyDisplay;
 
 
@@ -15,8 +17,9 @@ public static void main(String[] args) throws IOException{
 		
 		mortonCodesDemo();
 		
-		//these demos will run once all methods in the MortonCodes class are
-		//implemented.
+		//these Demos will violate assertions as long as the MortonCodes class are
+		//implemented.  
+		//(enabling Assertions recommended! in Eclipse menu: run->run configuration->arguments-> vm argument: -ea)
 		//hashTreeDemo(ObjReader.readAsPointCloud("./objs/dragon.obj", true));
 		//hashTreeDemo(PlyReader.readPointCloud("./objs/octreeTest2.ply", true));
 				
