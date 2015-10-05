@@ -29,7 +29,7 @@ public class Assignment_1_3_2 {
 	public static void main(String[] args) throws IOException{
 		//Load a wireframe mesh
 //		WireframeMesh m = ObjReader.read("./objs/oneNeighborhood.obj", true);
-		WireframeMesh m = ObjReader.read("./objs/bunny.obj", true);
+		WireframeMesh m = ObjReader.read("./objs/bunny5k.obj", true);
 
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		
