@@ -44,12 +44,12 @@ public class Shape implements ActionListener {
 
 
 	public void loadPreferredShader(GLRenderer context) {
-		((GLDisplayable) vertexData).loadPreferredShader(context);
+		vertexData.loadPreferredShader(context);
 	}
 
 	public void setAdditionalUniforms(GLRenderer glRenderContext,
 			Transformation mvMat) {
-		((GLDisplayable) vertexData).loadAdditionalUniforms( glRenderContext,
+		vertexData.loadAdditionalUniforms( glRenderContext,
 				 mvMat);
 		
 	}

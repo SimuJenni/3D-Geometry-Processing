@@ -1,21 +1,10 @@
 package assignment1;
 
 import glWrapper.GLHalfedgeStructure;
-import glWrapper.GLWireframeMesh;
-
-import java.awt.geom.Arc2D.Float;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
-
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
-
 import openGL.MyDisplay;
-import utils.VecMath;
 import meshes.HEData1d;
-import meshes.HEData3d;
-import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
 import meshes.WireframeMesh;

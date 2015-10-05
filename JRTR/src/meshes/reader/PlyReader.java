@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 import javax.vecmath.Point3f;
@@ -79,7 +78,7 @@ public class PlyReader {
 		String line;
 		String[] s;
 		for(Element e: elementList){
-			ArrayList<Float>[] data = (ArrayList<Float>[]) new ArrayList[e.numberOfElements];
+			ArrayList<Float>[] data = new ArrayList[e.numberOfElements];
 			
 			for(int i = 0; i < e.numberOfElements; i++){
 				line = reader.readLine();

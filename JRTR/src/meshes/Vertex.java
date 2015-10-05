@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
 
@@ -64,6 +63,7 @@ public class Vertex extends HEElement{
 	}
 	
 	
+	@Override
 	public String toString(){
 		return "" + index;
 		//return pos.toString();

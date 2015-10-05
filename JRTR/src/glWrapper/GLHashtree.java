@@ -67,6 +67,7 @@ public class GLHashtree extends GLDisplayable {
 		this.addElement(vals, Semantic.USERSPECIFIED , 1, "func");
 	}
 
+	@Override
 	public int glRenderFlag() {
 		return GL.GL_POINTS;
 	}

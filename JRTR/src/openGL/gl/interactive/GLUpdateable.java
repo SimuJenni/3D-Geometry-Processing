@@ -4,9 +4,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import openGL.gl.GLDisplayable;
-import openGL.gl.GLRenderer;
-import openGL.gl.GLDisplayable.VertexElement;
-import openGL.objects.Transformation;
 
 
 /**

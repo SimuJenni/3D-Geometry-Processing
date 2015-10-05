@@ -2,7 +2,6 @@ package meshes.reader;
 
 import glWrapper.GLWireframeMesh;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;

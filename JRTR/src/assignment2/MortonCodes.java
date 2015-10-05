@@ -11,6 +11,7 @@ public class MortonCodes {
 	public static final long d100100 = 0b100100100100100100100100100100100100100100100100100100100100100L, 
 			d010010 = 0b010010010010010010010010010010010010010010010010010010010010010L, 
 			d001001 = 0b001001001001001001001001001001001001001001001001001001001001001L;
+	private static final int maxTreeDepth = 8;
 	
 	
 	/**
@@ -19,10 +20,22 @@ public class MortonCodes {
 	 * @return
 	 */
 	public static long parentCode(long code){
-		
-		
-		//implement this.
-		return -1L;
+		long result = code >> 3;		
+		return result;
+	}
+	
+	/**
+	 * Computes the tree depth or number of levels the code is given in.
+	 * @param code
+	 * @return
+	 */
+	public static int getTreeDepth(long code){
+		for(int i=1; i<maxTreeDepth; i++){
+			if(~(-1<<(i*3+1))>=code){
+				return i;
+			}
+		}
+		return maxTreeDepth;
 	}
 	
 	/**
@@ -34,9 +47,33 @@ public class MortonCodes {
 	 * @return
 	 */
 	public static long nbrCode(long code, int level, int Obxyz){
-		
-		//implement this
-		return -1L;
+		int depth = getTreeDepth(code);
+		long diff = transformToLevel(Obxyz, level, depth);
+		long result = dilatedAdd(code, diff);
+		if(overflowTest(result, level)){
+			return -1;
+		}
+		else {
+			return result;
+		}	}
+	
+	public static long dilatedAdd(long x, long y){
+		long result = ((x|~d100100)+(y&d100100))&d100100; // x_mask
+		result |= ((x|~d010010)+(y&d010010))&d010010; // y_mask
+		result |= ((x|~d001001)+(y&d001001))&d001001; // z_mask
+		return result;
+	}
+	
+	/**
+	 * Transforms the given direction code to the target level in a tree of specified depth.
+	 * @param Obxyz
+	 * @param targetLevel
+	 * @param numLevels
+	 * @return 
+	 */
+	public static long transformToLevel(int Obxyz, int targetLevel, int depth){
+		long result = Obxyz << 3*(depth-targetLevel);
+		return result;
 	}
 
 	/**
@@ -48,11 +85,23 @@ public class MortonCodes {
 	 * @return
 	 */	
 	public static long nbrCodeMinus(long code, int level, int Obxyz){
-		//implement this
-		return -1L;
+		int depth = getTreeDepth(code);
+		long diff = transformToLevel(Obxyz, level, depth);
+		long result = dilatedSub(code, diff);
+		if(overflowTest(result, level)){
+			return -1;
+		}
+		else {
+			return result;
+		}
 	}
 	
-	
+	public static long dilatedSub(long x, long y){
+		long result = ((x&d100100)-(y&d100100))&d100100; // x_mask
+		result |= ((x&d010010)-(y&d010010))&d010010; // y_mask
+		result |= ((x&d001001)-(y&d001001))&d001001; // z_mask
+		return result;
+	}
 	
 	/**
 	 * A test to check if an overflow/underflow has occurred. it is enough to test
@@ -62,11 +111,7 @@ public class MortonCodes {
 	 * @return
 	 */
 	public static boolean overflowTest(long code, int level){
-
-		//implement this
-		
-		return true;
-		
+		return code>(1<<(3*level+1));	
 	}
 	
 	
@@ -78,9 +123,8 @@ public class MortonCodes {
 	 * @return
 	 */
 	public static boolean isCellOnLevelXGrid(long cell_code, int level){
-
-		//implement this..
-		return false;
+		int depth = getTreeDepth(cell_code);
+		return depth==level;
 	}
 	
 	
@@ -92,8 +136,8 @@ public class MortonCodes {
 	 * it will lie on the levels k+1,k+2... tree_depth too.
 	 */
 	public static boolean isVertexOnLevelXGrid(long vertex_code, int level, int tree_depth){
-		//implement this..
-		return false;
+		long result = ~(-1<<(tree_depth-level)*3)&vertex_code;
+		return result==0;
 	}
 	
 	/**

@@ -34,6 +34,7 @@ public class HashOctreeVertex {
 		position = new Point3f();
 	}
 	
+	@Override
 	public boolean equals(Object o){
 		assert(code >= 0);
 		if(o instanceof HashOctreeVertex){

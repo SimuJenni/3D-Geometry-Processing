@@ -11,9 +11,7 @@ import meshes.HEData1d;
 import meshes.HEData3d;
 import meshes.HalfEdgeStructure;
 import meshes.Vertex;
-import openGL.gl.GLDisplayable;
 import openGL.gl.GLRenderer;
-import openGL.gl.GLDisplayable.Semantic;
 import openGL.gl.interactive.GLUpdateable;
 import openGL.objects.Transformation;
 

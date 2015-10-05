@@ -3,12 +3,6 @@ package openGL;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-
 import openGL.gl.GLDisplayable;
 import openGL.gl.interactive.GLUpdateable;
 import openGL.interfaces.RenderPanel;

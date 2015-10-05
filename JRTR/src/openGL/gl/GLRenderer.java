@@ -8,7 +8,6 @@ import java.util.ListIterator;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL3;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.glu.GLU;
 import javax.vecmath.Tuple3f;
 
 import openGL.gl.interactive.GLUpdateable;
@@ -134,7 +133,7 @@ public class GLRenderer {
 		
 		renderItem.getShape().loadPreferredShader(this);
 
-		GLDisplayable vertexData = (GLDisplayable) renderItem.getShape()
+		GLDisplayable vertexData = renderItem.getShape()
 				.getVertexData();
 
 		// In the first pass the object has to be given to the buffer (on the

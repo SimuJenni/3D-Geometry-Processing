@@ -91,6 +91,7 @@ public abstract class GLRenderPanel implements RenderPanel {
 	/**
 	 * Call back function to obtain the renderContext
 	 */
+	@Override
 	abstract public void init(GLRenderer renderContext);
 	
 	/**

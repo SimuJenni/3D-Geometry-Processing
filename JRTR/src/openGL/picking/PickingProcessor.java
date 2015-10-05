@@ -1,10 +1,7 @@
 package openGL.picking;
 
 import javax.vecmath.Matrix3f;
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
-
-import openGL.picking.PickingProcessor.PickTarget;
 
 
 /**

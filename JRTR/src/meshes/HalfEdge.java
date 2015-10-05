@@ -121,6 +121,7 @@ public class HalfEdge extends HEElement{
 		return this.incident_f == null || opposite.incident_f == null;
 	}
 	
+	@Override
 	public String toString(){
 		return "( " + start().toString() + " --> " + end().toString() + ")";
 	}

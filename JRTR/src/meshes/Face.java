@@ -3,8 +3,6 @@ package meshes;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
 public class Face extends HEElement {
@@ -51,6 +49,7 @@ public class Face extends HEElement {
 		return normal;
 	}
 	
+	@Override
 	public String toString(){
 		if(anEdge == null){
 			return "f: not initialized";

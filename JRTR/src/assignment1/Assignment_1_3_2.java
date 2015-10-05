@@ -4,15 +4,12 @@ import glWrapper.GLHalfedgeStructure;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 
 import openGL.MyDisplay;
-import meshes.Face;
 import meshes.HEData1d;
 import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
-import meshes.IterableHEData;
 import meshes.Vertex;
 import meshes.WireframeMesh;
 import meshes.exception.DanglingTriangleException;

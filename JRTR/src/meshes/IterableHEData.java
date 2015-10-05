@@ -14,6 +14,7 @@ implements Iterable<Payload>{
 		this.relatedElements = elements;
 	}
 	
+	@Override
 	public int size(){
 		return relatedElements.size();
 	}

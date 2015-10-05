@@ -7,6 +7,7 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2ES2;
 import javax.media.opengl.GL3;
 
 import openGL.interfaces.Shader;
@@ -32,7 +33,7 @@ public class GLShader implements Shader {
 				.order(ByteOrder.nativeOrder()).asIntBuffer();
 		ib.rewind();
 
-		gl.glGetShaderiv(shaderObject, GL3.GL_INFO_LOG_LENGTH, ib);
+		gl.glGetShaderiv(shaderObject, GL2ES2.GL_INFO_LOG_LENGTH, ib);
 		int logLenght = ib.get(0);
 		if (logLenght <= 2)
 			return " - No compiler messages.";
@@ -55,7 +56,7 @@ public class GLShader implements Shader {
 				.order(ByteOrder.nativeOrder()).asIntBuffer();
 		ib.rewind();
 
-		gl.glGetProgramiv(shaderObject, GL3.GL_INFO_LOG_LENGTH, ib);
+		gl.glGetProgramiv(shaderObject, GL2ES2.GL_INFO_LOG_LENGTH, ib);
 		int logLenght = ib.get(0);
 		if (logLenght <= 2)
 			return " - No linker messgaes.";
@@ -78,8 +79,8 @@ public class GLShader implements Shader {
 			throws Exception {
 		int v, f;
 
-		v = gl.glCreateShader(GL3.GL_VERTEX_SHADER);
-		f = gl.glCreateShader(GL3.GL_FRAGMENT_SHADER);
+		v = gl.glCreateShader(GL2ES2.GL_VERTEX_SHADER);
+		f = gl.glCreateShader(GL2ES2.GL_FRAGMENT_SHADER);
 
 		String vsrc[] = new String[1];
 		String fsrc[] = new String[1];
@@ -121,11 +122,11 @@ public class GLShader implements Shader {
 		System.out.println("Linker output:\n" + this.getLinkerOutput(p));
 
 		int[] status = new int[1];
-		gl.glGetShaderiv(v, GL3.GL_COMPILE_STATUS, status, 0);
+		gl.glGetShaderiv(v, GL2ES2.GL_COMPILE_STATUS, status, 0);
 		if (status[0] == GL.GL_FALSE) {
 			throw new Exception("Could not compile vertex shader.");
 		}
-		gl.glGetShaderiv(f, GL3.GL_COMPILE_STATUS, status, 0);
+		gl.glGetShaderiv(f, GL2ES2.GL_COMPILE_STATUS, status, 0);
 		if (status[0] == GL.GL_FALSE) {
 			throw new Exception("Could not compile fragment shader.");
 		}
@@ -133,7 +134,7 @@ public class GLShader implements Shader {
 		IntBuffer ib = ByteBuffer.allocateDirect(4)
 				.order(ByteOrder.nativeOrder()).asIntBuffer();
 		ib.rewind();
-		gl.glGetProgramiv(p, GL3.GL_LINK_STATUS, ib);
+		gl.glGetProgramiv(p, GL2ES2.GL_LINK_STATUS, ib);
 		if (ib.get(0) == GL.GL_FALSE) {
 			throw new Exception("Could not link vertex and fragment shader.");
 		}
@@ -151,8 +152,8 @@ public class GLShader implements Shader {
 			throws Exception {
 		int v, f, g;
 
-		v = gl.glCreateShader(GL3.GL_VERTEX_SHADER);
-		f = gl.glCreateShader(GL3.GL_FRAGMENT_SHADER);
+		v = gl.glCreateShader(GL2ES2.GL_VERTEX_SHADER);
+		f = gl.glCreateShader(GL2ES2.GL_FRAGMENT_SHADER);
 		g = gl.glCreateShader(GL3.GL_GEOMETRY_SHADER);
 
 		String vsrc[] = new String[1];
@@ -211,16 +212,16 @@ public class GLShader implements Shader {
 		System.out.println("Linker output:\n" + this.getLinkerOutput(p));
 
 		int[] status = new int[1];
-		gl.glGetShaderiv(v, GL3.GL_COMPILE_STATUS, status, 0);
+		gl.glGetShaderiv(v, GL2ES2.GL_COMPILE_STATUS, status, 0);
 		if (status[0] == GL.GL_FALSE) {
 			throw new Exception("Could not compile vertex shader.");
 		}
-		gl.glGetShaderiv(f, GL3.GL_COMPILE_STATUS, status, 0);
+		gl.glGetShaderiv(f, GL2ES2.GL_COMPILE_STATUS, status, 0);
 		if (status[0] == GL.GL_FALSE) {
 			throw new Exception("Could not compile fragment shader.");
 		}
 		
-		gl.glGetShaderiv(g, GL3.GL_COMPILE_STATUS, status, 0);
+		gl.glGetShaderiv(g, GL2ES2.GL_COMPILE_STATUS, status, 0);
 		if (status[0] == GL.GL_FALSE) {
 			throw new Exception("Could not compile geometry shader.");
 		}
@@ -228,7 +229,7 @@ public class GLShader implements Shader {
 		IntBuffer ib = ByteBuffer.allocateDirect(4)
 				.order(ByteOrder.nativeOrder()).asIntBuffer();
 		ib.rewind();
-		gl.glGetProgramiv(p, GL3.GL_LINK_STATUS, ib);
+		gl.glGetProgramiv(p, GL2ES2.GL_LINK_STATUS, ib);
 		if (ib.get(0) == GL.GL_FALSE) {
 			throw new Exception("Could not link vertex and fragment shader.");
 		}

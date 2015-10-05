@@ -1,8 +1,6 @@
 package assignment1;
 
 import glWrapper.GLHalfedgeStructure;
-import glWrapper.GLWireframeMesh;
-
 import java.io.IOException;
 
 import openGL.MyDisplay;
