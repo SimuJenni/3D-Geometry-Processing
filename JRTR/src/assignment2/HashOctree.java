@@ -279,7 +279,7 @@ public class HashOctree {
 	}
 	
 
-	public int numberofVertices() {
+	public int numberOfVertices() {
 		return vertexMap.size();
 	}
 
@@ -417,10 +417,15 @@ public class HashOctree {
 	 * @return
 	 */
 	public HashOctreeVertex getNbr_v2v(HashOctreeVertex v, int nbr_0bxyz){
-
-		//TODO implement this
-		
-		return null;
+		HashOctreeVertex nbr = null;
+		for(int i=v.maxLvl; i>=v.minLvl; i--){
+			long nbrCode = MortonCodes.nbrCode(v.code >> 3*(this.depth-i), i, nbr_0bxyz);
+			nbr = getVertex(nbrCode << 3*(this.depth-i));
+			if(nbr != null){
+				return nbr;
+			}
+		}
+		return nbr;	
 	}
 	
 	/** find and return maximal depth vertex, that shares an edge of some octreecell
@@ -431,10 +436,15 @@ public class HashOctree {
 	 * @return
 	 */
 	public HashOctreeVertex getNbr_v2vMinus(HashOctreeVertex v, int nbr_0bxyz){
-		
-		//TODO implement this
-		
-		return null;
+		HashOctreeVertex nbr = null;
+		for(int i=v.maxLvl; i>=v.minLvl; i--){
+			long nbrCode = MortonCodes.nbrCodeMinus(v.code >> 3*(this.depth-i), i, nbr_0bxyz);
+			nbr = getVertex(nbrCode << 3*(this.depth-i));
+			if(nbr != null){
+				return nbr;
+			}
+		}
+		return nbr;		
 	}
 	
 	

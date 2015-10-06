@@ -8,33 +8,34 @@ import javax.vecmath.Point3f;
 
 import assignment2.HashOctree;
 import assignment2.HashOctreeCell;
+import assignment2.HashOctreeVertex;
 import meshes.Vertex;
 import openGL.gl.GLDisplayable;
 import openGL.gl.GLRenderer;
 import openGL.gl.GLDisplayable.Semantic;
 import openGL.objects.Transformation;
 
-public class GLHaschTreeC2C extends GLDisplayable {
+public class GLHaschTreeV2V extends GLDisplayable {
 
 	
-	public GLHaschTreeC2C(HashOctree tree){
-		super(tree.numberOfCells()*6);
+	public GLHaschTreeV2V(HashOctree tree){
+		super(tree.numberOfVertices()*6);
 
-		Collection<HashOctreeCell> cells = tree.getCells();
+		Collection<HashOctreeVertex> verts = tree.getVertices();
 		
 		ArrayList<Point3f> origins = new ArrayList<Point3f>();
 		ArrayList<Point3f> neighbors = new ArrayList<Point3f>();
 
-		for(HashOctreeCell cell : cells){	
-			extractNeighbor(tree, origins, neighbors, cell, 0b100, false);
-			extractNeighbor(tree, origins, neighbors, cell, 0b010, false);
-			extractNeighbor(tree, origins, neighbors, cell, 0b001, false);
-			extractNeighbor(tree, origins, neighbors, cell, 0b100, true);
-			extractNeighbor(tree, origins, neighbors, cell, 0b010, true);
-			extractNeighbor(tree, origins, neighbors, cell, 0b001, true);
+		for(HashOctreeVertex vert : verts){	
+			extractNeighbor(tree, origins, neighbors, vert, 0b100, false);
+			extractNeighbor(tree, origins, neighbors, vert, 0b010, false);
+			extractNeighbor(tree, origins, neighbors, vert, 0b001, false);
+			extractNeighbor(tree, origins, neighbors, vert, 0b100, true);
+			extractNeighbor(tree, origins, neighbors, vert, 0b010, true);
+			extractNeighbor(tree, origins, neighbors, vert, 0b001, true);
 		}
 		
-		int[] ind = new int[cells.size()*6];
+		int[] ind = new int[verts.size()*6];
 		for(int i = 0; i < ind.length; i++)	{
 			ind[i]=i;
 		}
@@ -47,18 +48,18 @@ public class GLHaschTreeC2C extends GLDisplayable {
 	}
 
 	private void extractNeighbor(HashOctree tree, ArrayList<Point3f> origins, ArrayList<Point3f> neighbors,
-			HashOctreeCell cell, int Obxyz, boolean minus) {
-		Point3f origin = cell.center;
-		HashOctreeCell nbrCell;
+			HashOctreeVertex vert, int Obxyz, boolean minus) {
+		Point3f origin = vert.position;
+		HashOctreeVertex nbrVert;
 		if(minus)
-			nbrCell = tree.getNbr_c2c(cell, Obxyz);
+			nbrVert = tree.getNbr_v2v(vert, Obxyz);
 		else
-			nbrCell = tree.getNbr_c2cMinus(cell, Obxyz);
+			nbrVert = tree.getNbr_v2vMinus(vert, Obxyz);
 
-		if(nbrCell == null){
-			nbrCell = cell;
+		if(nbrVert == null){
+			nbrVert = vert;
 		}
-		Point3f nbr = nbrCell.center;
+		Point3f nbr = nbrVert.position;
 		origins.add(origin);
 		neighbors.add(nbr);
 	}

@@ -55,7 +55,8 @@ public class MortonCodes {
 		}
 		else {
 			return result;
-		}	}
+		}	
+	}
 	
 	public static long dilatedAdd(long x, long y){
 		long result = ((x|~d100100)+(y&d100100))&d100100; // x_mask
@@ -66,13 +67,13 @@ public class MortonCodes {
 	
 	/**
 	 * Transforms the given direction code to the target level in a tree of specified depth.
-	 * @param Obxyz
+	 * @param nbrCode
 	 * @param targetLevel
 	 * @param numLevels
 	 * @return 
 	 */
-	public static long transformToLevel(int Obxyz, int targetLevel, int depth){
-		long result = Obxyz << 3*(depth-targetLevel);
+	public static long transformToLevel(long nbrCode, int targetLevel, int depth){
+		long result = nbrCode << 3*(depth-targetLevel);
 		return result;
 	}
 
