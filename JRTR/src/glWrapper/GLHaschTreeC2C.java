@@ -18,7 +18,7 @@ public class GLHaschTreeC2C extends GLDisplayable {
 
 	
 	public GLHaschTreeC2C(HashOctree tree){
-		super(tree.numberOfCells());
+		super(tree.numberOfCells()*6);
 
 		Collection<HashOctreeCell> cells = tree.getCells();
 		
@@ -34,13 +34,13 @@ public class GLHaschTreeC2C extends GLDisplayable {
 			extractNeighbor(tree, origins, neighbors, cell, 0b001, true);
 		}
 		
-		int[] ind = new int[cells.size()];
+		int[] ind = new int[cells.size()*6];
 		for(int i = 0; i < ind.length; i++)	{
 			ind[i]=i;
 		}
 		
 		this.addElement(toArrayP3f(origins), Semantic.POSITION , 3, "position");
-		this.addElement(toArrayP3f(neighbors), Semantic.USERSPECIFIED , 3, "nbr");
+		this.addElement(toArrayP3f(neighbors), Semantic.USERSPECIFIED , 3, "target");
 		this.configurePreferredShader("shaders/octreeC2C.vert", "shaders/octreeC2C.frag", "shaders/octreeC2C.geom");
 		this.addIndices(ind);
 
