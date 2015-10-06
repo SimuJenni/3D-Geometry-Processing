@@ -376,8 +376,8 @@ public class HashOctree {
 	 */
 	public HashOctreeCell getParent(HashOctreeCell cell){
 		
-		//TODO implement this...
-		return null;
+		long parentCode = MortonCodes.parentCode(cell.code);
+		return getCell(parentCode);
 	}
 	
 	/**
@@ -390,9 +390,8 @@ public class HashOctree {
 	 */
 	public HashOctreeCell getNbr_c2c(HashOctreeCell cell, int Obxyz){
 		
-		//TODO implement this...
-		
-		return null;
+		long nbrCode = MortonCodes.nbrCode(cell.code, cell.lvl, Obxyz);
+		return getNextValidCell(nbrCode);
 	}
 	
 	/**
@@ -404,8 +403,8 @@ public class HashOctree {
 	 */
 	public HashOctreeCell getNbr_c2cMinus(HashOctreeCell cell, int Obxyz){
 
-		//TODO implement this
-		return null;
+		long nbrCode = MortonCodes.nbrCodeMinus(cell.code, cell.lvl, Obxyz);
+		return getNextValidCell(nbrCode);
 	}
 	
 	
