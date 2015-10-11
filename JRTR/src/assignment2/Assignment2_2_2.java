@@ -40,6 +40,8 @@ public static void main(String[] args) throws IOException{
 		
 		MyDisplay display = new MyDisplay();
 		GLPointCloud glPC = new GLPointCloud(pointCloud);
+//		GLPointCloud glPC = new GLPointCloud(pc);
+
 		GLHashtree glOT = new GLHashtree(tree);
 		GLHaschTreeParents glHP = new GLHaschTreeParents(tree);
 		

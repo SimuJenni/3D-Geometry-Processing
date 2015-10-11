@@ -41,7 +41,7 @@ public static void main(String[] args) throws IOException{
 				"shaders/octree.geom");
 		
 		
-//		display.addToDisplay(glOT);
+		display.addToDisplay(glOT);
 		display.addToDisplay(glNBR); // parent Connections
 	}
 

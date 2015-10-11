@@ -66,6 +66,11 @@ public class MortonTests {
 	public void test_nbr_minus_z() {
 		assertEquals(nbr_minus_z, MortonCodes.nbrCodeMinus(hash, level, 0b001));
 	}
+	
+	@Test
+	public void test_overflow() {
+		assertEquals(-1, MortonCodes.nbrCode(0b100, 1, 0b100));
+	}
 
 	@Test
 	public void testDepth() {

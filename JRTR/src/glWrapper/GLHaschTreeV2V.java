@@ -19,7 +19,7 @@ public class GLHaschTreeV2V extends GLDisplayable {
 
 	
 	public GLHaschTreeV2V(HashOctree tree){
-		super(tree.numberOfVertices()*6);
+		super(tree.numberofVertices()*6);
 
 		Collection<HashOctreeVertex> verts = tree.getVertices();
 		
