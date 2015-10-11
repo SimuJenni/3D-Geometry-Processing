@@ -10,7 +10,9 @@ import assignment2.HashOctree;
 import assignment2.HashOctreeVertex;
 import glWrapper.GLHashtree;
 import glWrapper.GLHashtree_Vertices;
+import glWrapper.GLWireframeMesh;
 import meshes.PointCloud;
+import meshes.WireframeMesh;
 import openGL.MyDisplay;
 
 public class Assignment3 {
@@ -32,9 +34,12 @@ public class Assignment3 {
 		ArrayList<Float> x = sphericalFunction(tree);
 		
 		//Do your magic here...
-		
+		MarchingCubes marchingCubes = new MarchingCubes(tree);
+		marchingCubes.primaryMC(x);
 		
 		//And show off...
+		WireframeMesh mesh = marchingCubes.getResult();
+		GLWireframeMesh gl_mesh = new GLWireframeMesh(mesh);
 		
 		//visualization of the per vertex values (blue = negative, 
 		//red = positive, green = 0);
@@ -43,7 +48,7 @@ public class Assignment3 {
 		gl_v.addFunctionValues(x);
 		gl_v.configurePreferredShader("shaders/func.vert", 
 				"shaders/func.frag", null);
-		d.addToDisplay(gl_v);
+//		d.addToDisplay(gl_v);
 		
 		//discrete approximation of the zero level set: render all
 		//tree cubes that have negative values.
@@ -51,7 +56,10 @@ public class Assignment3 {
 		gltree.addFunctionValues(x);
 		gltree.configurePreferredShader("shaders/octree_zro.vert", 
 				"shaders/octree_zro.frag", "shaders/octree_zro.geom");
-		d.addToDisplay(gltree);
+//		d.addToDisplay(gltree);
+		
+		
+		d.addToDisplay(gl_mesh);
 	}
 	
 	
