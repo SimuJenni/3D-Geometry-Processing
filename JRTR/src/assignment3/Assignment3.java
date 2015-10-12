@@ -35,7 +35,9 @@ public class Assignment3 {
 		
 		//Do your magic here...
 		MarchingCubes marchingCubes = new MarchingCubes(tree);
-		marchingCubes.primaryMC(x);
+//		marchingCubes.primaryMC(x);
+		marchingCubes.dualMC(x);
+
 		
 		//And show off...
 		WireframeMesh mesh = marchingCubes.getResult();

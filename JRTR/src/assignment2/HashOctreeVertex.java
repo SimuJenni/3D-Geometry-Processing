@@ -52,7 +52,11 @@ public class HashOctreeVertex implements MarchableCube{
 
 	@Override
 	public MarchableCube getCornerElement(int Obxyz, HashOctree tree) {
-		return tree.getNbr_v2c(this, Obxyz);
+		MarchableCube corner = tree.getNbr_v2c(this, Obxyz);
+		if(corner == null){
+			corner = this;
+		}
+		return corner;
 	}
 
 	@Override

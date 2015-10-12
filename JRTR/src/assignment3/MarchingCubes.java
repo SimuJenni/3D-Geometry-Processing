@@ -6,6 +6,7 @@ import javax.vecmath.Point3f;
 
 import assignment2.HashOctree;
 import assignment2.HashOctreeCell;
+import assignment2.HashOctreeVertex;
 import assignment3.marchingCubes.MCTable;
 import assignment3.marchingCubes.MarchableCube;
 import meshes.Point2i;
@@ -65,17 +66,52 @@ public class MarchingCubes {
 		}
 	}
 	
-	private void addFunctionValue2Vals(MarchableCube cube, int Obxyz, ArrayList<Float> byVertex){
-		MarchableCube corner = cube.getCornerElement(Obxyz, tree);
-		val.add(byVertex.get(corner.getIndex()));
+	private void addFunctionValue2Vals(HashOctreeCell cell, int Obxyz, ArrayList<Float> byVertex){
+		MarchableCube cornerVert = cell.getCornerElement(Obxyz, tree);
+		val.add(byVertex.get(cornerVert.getIndex()));
+	}
+	
+	private void addFunctionValue2Vals(HashOctreeVertex cube, int Obxyz, ArrayList<Float> byVertex){
+		MarchableCube cornerCell = cube.getCornerElement(Obxyz, tree);
+		// Must compute the interpolated function value at the center (average of corner values)
+		float avg = byVertex.get(cornerCell.getCornerElement(0b000, tree).getIndex());
+		avg += byVertex.get(cornerCell.getCornerElement(0b001, tree).getIndex());
+		avg += byVertex.get(cornerCell.getCornerElement(0b010, tree).getIndex());
+		avg += byVertex.get(cornerCell.getCornerElement(0b011, tree).getIndex());
+		avg += byVertex.get(cornerCell.getCornerElement(0b100, tree).getIndex());
+		avg += byVertex.get(cornerCell.getCornerElement(0b101, tree).getIndex());
+		avg += byVertex.get(cornerCell.getCornerElement(0b110, tree).getIndex());
+		avg += byVertex.get(cornerCell.getCornerElement(0b111, tree).getIndex());
+		val.add(avg/8.f);
 	}
 	
 	/**
 	 * Perform dual marchingCubes on the tree
 	 */
-	public void dualMC(ArrayList<Float> byVertex) {
-
-		//do your stuff
+	public void dualMC(ArrayList<Float> byVertex) {		
+		this.val = byVertex;
+		this.result = new WireframeMesh();
+		
+		// Must interpolate the function-values at the vertices to values on the cell-centers
+		
+		//do your stuff...
+		ArrayList<HashOctreeVertex> verts = tree.getVertices();
+		for(  HashOctreeVertex vert : verts){
+			if(tree.isOnBoundary(vert)){
+				continue;
+			}
+			val = new ArrayList<Float>();
+			// get the function values of all the corner vertices
+			addFunctionValue2Vals(vert, 0b000, byVertex);
+			addFunctionValue2Vals(vert, 0b001, byVertex);
+			addFunctionValue2Vals(vert, 0b010, byVertex);
+			addFunctionValue2Vals(vert, 0b011, byVertex);
+			addFunctionValue2Vals(vert, 0b100, byVertex);
+			addFunctionValue2Vals(vert, 0b101, byVertex);
+			addFunctionValue2Vals(vert, 0b110, byVertex);
+			addFunctionValue2Vals(vert, 0b111, byVertex);
+			pushCube(vert);
+		}
 		
 	}
 	
@@ -122,6 +158,7 @@ public class MarchingCubes {
 	}
 
 	private float[] toArray(ArrayList<Float> values) {
+		assert(values.size()==15);
 		float[] array = new float[values.size()];
 		for(int i=0; i<values.size(); i++){
 			array[i] = values.get(i);
