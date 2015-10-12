@@ -1,6 +1,8 @@
 package assignment3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.vecmath.Point3f;
 
@@ -28,8 +30,10 @@ public class MarchingCubes {
 	private HashOctree tree;
 	//per marchable cube values
 	private ArrayList<Float> val;
-	private int faceCount;
-
+	private int vertCount;
+	private HashMap<Point2i, Integer> edgeMap;
+	private ArrayList<Point3f> createdVerts;
+	private ArrayList<Integer> usedVerts;
 	
 	/**
 	 * Implementation of the marching cube algorithm. pass the tree
@@ -39,7 +43,10 @@ public class MarchingCubes {
 	 */
 	public MarchingCubes(HashOctree tree){
 		this.tree = tree;
-		faceCount = 0;
+		vertCount = 0;
+		edgeMap = new HashMap<Point2i, Integer>();
+		createdVerts = new ArrayList<Point3f>();
+		usedVerts = new ArrayList<Integer>();
 	}
 
 	/**
@@ -49,7 +56,6 @@ public class MarchingCubes {
 		this.val = byVertex;
 		this.result = new WireframeMesh();
 		
-		//do your stuff...
 		ArrayList<HashOctreeCell> leafCells = tree.getLeafs();
 		for(HashOctreeCell cell : leafCells){
 			val = new ArrayList<Float>();
@@ -92,9 +98,6 @@ public class MarchingCubes {
 		this.val = byVertex;
 		this.result = new WireframeMesh();
 		
-		// Must interpolate the function-values at the vertices to values on the cell-centers
-		
-		//do your stuff...
 		ArrayList<HashOctreeVertex> verts = tree.getVertices();
 		for(  HashOctreeVertex vert : verts){
 			if(tree.isOnBoundary(vert)){
@@ -129,6 +132,8 @@ public class MarchingCubes {
 		float[] cornerVals = toArray(this.val);
 		MCTable.resolve(toArray(this.val), edgeInfo);
 		
+		ArrayList<Integer> faceIndexes = new ArrayList<Integer>();
+		
 		// Iterate over all the triangles to create
 		for(int i=0; i<edgeInfo.length; i++){
 			if(edgeInfo[i].x==-1 || edgeInfo[i].y==-1){
@@ -136,16 +141,49 @@ public class MarchingCubes {
 			}
 			MarchableCube vert1 = n.getCornerElement(edgeInfo[i].x, tree);
 			MarchableCube vert2 = n.getCornerElement(edgeInfo[i].y, tree);
-			float val1 = cornerVals[edgeInfo[i].x];
-			float val2 = cornerVals[edgeInfo[i].y];
-			Point3f pos = interpolatePosition(vert1.getPosition(), vert2.getPosition(), val1, val2);
-			result.vertices.add(pos);
-			faceCount++;
-			if(faceCount%3==0){
-				result.faces.add(new int[]{faceCount-3,faceCount-2,faceCount-1});
+			int vertIndex = vertCount;
+			if(edgeMap.containsKey(compute_key(n, edgeInfo[i]))){
+				// If edge already stored reuse vertex
+				vertIndex = edgeMap.get(compute_key(n, edgeInfo[i]));
 			}
+			else {
+				float val1 = cornerVals[edgeInfo[i].x];
+				float val2 = cornerVals[edgeInfo[i].y];
+				Point3f pos = interpolatePosition(vert1.getPosition(), vert2.getPosition(), val1, val2);
+				createdVerts.add(pos);
+				// Add newly created vertex to edgeMap
+				edgeMap.put(compute_key(n, edgeInfo[i]), vertCount);
+				vertCount++;
+			}
+			faceIndexes.add(vertIndex);
 		}
+		extractValidFaces(faceIndexes);
+	}
 
+	private void extractValidFaces(ArrayList<Integer> faceIndexes) {
+		assert(faceIndexes.size()%3==0);
+		for(int i=0; i<faceIndexes.size()/3; i++){
+			int idx1 = faceIndexes.get(i*3);
+			int idx2 = faceIndexes.get(i*3+1);
+			int idx3 = faceIndexes.get(i*3+2);
+			if(idx1==idx2||idx1==idx3||idx2==idx3){
+				// Skip degenerate triangles
+				continue;
+			}
+			result.faces.add(new int[]{idx1, idx2, idx3});
+			addMissingVert2Result(idx1);
+			addMissingVert2Result(idx2);
+			addMissingVert2Result(idx3);
+		}
+	}
+
+	private void addMissingVert2Result(int idx) {
+		if(!usedVerts.contains(idx)){
+			usedVerts.add(idx);
+			result.vertices.add(this.createdVerts.get(idx));
+		}
+		assert(vertCount==createdVerts.size());
+		assert(vertCount>=usedVerts.size());
 	}
 
 	private Point3f interpolatePosition(Point3f posA, Point3f posB, float a, float b) {
