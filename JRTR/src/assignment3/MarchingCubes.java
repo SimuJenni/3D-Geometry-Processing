@@ -2,7 +2,6 @@ package assignment3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import javax.vecmath.Point3f;
 

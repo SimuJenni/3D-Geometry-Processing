@@ -1,9 +1,11 @@
-package assignment2;
+package assignment_2;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import assignment2.MortonCodes;
 
 public class MortonTests {
 	
