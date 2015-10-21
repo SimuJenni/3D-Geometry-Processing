@@ -15,7 +15,7 @@ import meshes.PointCloud;
 import meshes.WireframeMesh;
 import openGL.MyDisplay;
 
-public class Assignment3 {
+public class Assignment3_1_3 {
 	
 	public static void main(String[] args) throws IOException{
 		
@@ -35,8 +35,8 @@ public class Assignment3 {
 		
 		//Do your magic here...
 		MarchingCubes marchingCubes = new MarchingCubes(tree);
-//		marchingCubes.primaryMC(x);
-		marchingCubes.dualMC(x);
+		marchingCubes.primaryMC(x);
+//		marchingCubes.dualMC(x);
 
 		
 		//And show off...
