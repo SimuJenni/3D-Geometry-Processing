@@ -3,8 +3,12 @@ package sparse;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Call a script to do the eigenvalue decomposition.
@@ -59,26 +63,31 @@ public class SCIPYEVD {
 		
 	}
 
+	
 	private static void runSVDScript(String matrix_name, int k) throws IOException {
 		/*execute the script*/
-		Runtime rt = Runtime.getRuntime();
-		Process pr = rt.exec("python ./python/doSparseEig.py " +
-				"-i ./python/temp/" + matrix_name + "ifile " +
-				"-j ./python/temp/" + matrix_name + "jfile " +
-				"-v ./python/temp/" + matrix_name + "vfile " +
-				"-o ./python/temp/" + matrix_name + "out " +
-				"-k " + k);
-		
-	    
+				
+		ProcessBuilder pb = new ProcessBuilder(
+				//"python", "./python/doSparseEigs.py",
+				"python", "./python/doBandedEigs.py", 
+						"-i", "./python/temp/" + matrix_name + "ifile", 
+						"-j", "./python/temp/" + matrix_name + "jfile",
+						"-v", "./python/temp/" + matrix_name + "vfile",
+						"-o", "./python/temp/" + matrix_name + "out",
+						"-k", ""+  k
+				);
+		//get the output as it is produced. Note this only works
+		//if the python script flushes after all prints...
+		Process p = pb.start();
+		inheritIO(p.getInputStream(), System.out);
+	    inheritIO(p.getErrorStream(), System.err);
 		try {
-			pr.waitFor();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			p.waitFor();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
-		
-		/*get std.err and std.out*/
-		printConsoleOutput(pr);
 	}
 	
 	/**
@@ -133,22 +142,17 @@ public class SCIPYEVD {
 	    in.close();
 	}
 
-	private static void printConsoleOutput(Process pr) throws IOException {
-		String line;
-		BufferedReader in = new BufferedReader(
-				new InputStreamReader(pr.getErrorStream()));
-	    while ((line = in.readLine()) != null) {
-	        System.err.println(line);
-	    }
-	    in.close();
-	    in = new BufferedReader(
-				new InputStreamReader(pr.getInputStream()));
-	    while ((line = in.readLine()) != null) {
-	        System.out.println(line);
-	    }
-	    in.close();
-	}
 	
+	private static void inheritIO(final InputStream src, final PrintStream dest) {
+	    new Thread(new Runnable() {
+	        public void run() {
+	            Scanner sc = new Scanner(src);
+	            while (sc.hasNextLine()) {
+	                dest.println(sc.nextLine());
+	            }
+	        }
+	    }).start();
+	}
 
 	
 }

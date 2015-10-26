@@ -27,7 +27,7 @@ def doLeastSquares(argv):
                                    "valfile=", "bfile=",
                                    "xfile="])
     except getopt.GetoptError:
-        print 'doLeastSqr.py -i <inputfile> -j <inputfile> -v <inputfile> -b <inputfile> -x <outputfile>'
+        print('doLeastSqr.py -i <inputfile> -j <inputfile> -v <inputfile> -b <inputfile> -x <outputfile>')
         sys.exit(2)
     
     for opt, arg in opts:
@@ -58,7 +58,7 @@ def doLeastSquares(argv):
     for x_i in result[0]:
         f.write('%f\n' %(x_i))
     f.close()
-    print 'iterations: %i; error |Ax-b|: %f' %(result[2],result[3])
+    print( 'iterations: %i; error |Ax-b|: %f' %(result[2],result[3]))
 
     
 if __name__ == '__main__':

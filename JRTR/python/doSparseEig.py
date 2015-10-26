@@ -28,7 +28,7 @@ def doSymEigs(argv):
                                    "valfile=",
                                    "outPrefix=", "k="])
     except getopt.GetoptError:
-        print 'doSparseEig.py -i <inputfile> -j <inputfile> -v <inputfile> -o <outputfile> -k <numEvs>'
+        print( 'doSparseEig.py -i <inputfile> -j <inputfile> -v <inputfile> -o <outputfile> -k <numEvs>')
         sys.exit(2)
     
     for opt, arg in opts:
@@ -47,7 +47,7 @@ def doSymEigs(argv):
     vecfile += '_vecs'
     valfile = file_x_out + '_vals'
     
-    print "out: %s, %s\n" % (vecfile, valfile)
+    print( "out: %s, %s\n" % (vecfile, valfile))
     #read in the specified files
     rows = readArray(file_i)
     cols = readArray(file_j)
@@ -82,7 +82,7 @@ def doSymEigs(argv):
         f.write('%f \n' %(xi))
     f.close()
     
-    print 'Evd: success!'
+    print( 'Evd: success!')
 
     
 if __name__ == '__main__':
