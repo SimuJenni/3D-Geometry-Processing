@@ -35,13 +35,14 @@ public class Assignment3_1_3 {
 		
 		//Do your magic here...
 		MarchingCubes marchingCubes = new MarchingCubes(tree);
-		marchingCubes.primaryMC(x);
-//		marchingCubes.dualMC(x);
+//		marchingCubes.primaryMC(x);
+		marchingCubes.dualMC(x);
 
 		
 		//And show off...
 		WireframeMesh mesh = marchingCubes.getResult();
 		GLWireframeMesh gl_mesh = new GLWireframeMesh(mesh);
+		gl_mesh.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
 		
 		//visualization of the per vertex values (blue = negative, 
 		//red = positive, green = 0);

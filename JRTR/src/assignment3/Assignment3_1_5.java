@@ -51,6 +51,8 @@ public class Assignment3_1_5 {
 		}
 		hs.simpleSmooth();
 		GLHalfedgeStructure gl_hs = new GLHalfedgeStructure(hs);
+		gl_hs.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", "shaders/trimesh_flat.geom");
+
 		
 //		GLWireframeMesh gl_hs = new GLWireframeMesh(mesh);
 		

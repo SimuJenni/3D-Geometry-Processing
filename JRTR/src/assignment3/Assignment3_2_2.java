@@ -26,8 +26,8 @@ public class Assignment3_2_2 {
 		
 		PointCloud pc = ObjReader.readAsPointCloud("./objs/teapot.obj", true);
 		HashOctree tree = new HashOctree(pc,8,1,1f);
-		tree.refineTree(1);
-		LinearSystem linearSys = SSDMatrices.ssdSystem(tree, pc, 10, 0.0001f, 1000);
+//		tree.refineTree(1);
+		LinearSystem linearSys = SSDMatrices.ssdSystem(tree, pc, 10, 0.0001f, 10);
 		LSQRSolver solver = new LSQRSolver();
 		ArrayList<Float> x = new ArrayList<Float>();
 		solver.solve(linearSys, x);	
