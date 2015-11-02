@@ -307,4 +307,24 @@ public ArrayList<Vector3f> simpleNormals() {
 	return normals;
 }
 
+public float volume(){
+	float vol = 0;
+	for(Face f:this.faces){
+		Iterator<Vertex> vertItr = f.iteratorFV();
+		Vector3f v1 = new Vector3f(vertItr.next().getPos());
+		Vector3f v2 = new Vector3f(vertItr.next().getPos());
+		Vector3f v3 = new Vector3f(vertItr.next().getPos());
+		Vector3f vCross = new Vector3f();
+		vCross.cross(v2, v3);
+		vol += v1.dot(vCross)/6;
+	}
+	return vol;
+}
+
+public void scale(float factor){
+	for(Vertex v:this.vertices){
+		v.pos.scale(factor);
+	}
+}
+
 }

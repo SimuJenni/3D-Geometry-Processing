@@ -25,7 +25,23 @@ public class LMatrices {
 	 * @return
 	 */
 	public static CSRMatrix uniformLaplacian(HalfEdgeStructure hs){
-		return null;
+		ArrayList<Vertex> verts = hs.getVertices();
+		int n = verts.size();
+		CSRMatrix unifLaplace = new CSRMatrix(n, n);
+		for(Vertex v:verts){
+			if (v.isOnBoundary()) 
+				continue;
+			int row = v.index;
+			unifLaplace.set(row, row, -1);
+			Iterator<Vertex> neighborIter = v.iteratorVV();
+			int valence = v.valence();
+			while(neighborIter.hasNext()){
+				Vertex neighbor = neighborIter.next();
+				int col = neighbor.index;
+				unifLaplace.set(row, col, 1f/valence);	
+			}
+		}
+		return unifLaplace;
 	}
 	
 	/**
@@ -34,7 +50,29 @@ public class LMatrices {
 	 * @return
 	 */
 	public static CSRMatrix mixedCotanLaplacian(HalfEdgeStructure hs){
-		return null;
+		ArrayList<Vertex> verts = hs.getVertices();
+		int n = verts.size();
+		CSRMatrix cotanLaplace = new CSRMatrix(n, n);
+		for(Vertex v:verts){
+			if (v.isOnBoundary()) 
+				continue; 
+			int row = v.index;
+			float sumOfCotans = 0;
+			float area = v.computeMixedArea();
+			Iterator<HalfEdge> edgeIt = v.iteratorVE();
+			while(edgeIt.hasNext()){
+				HalfEdge edge = edgeIt.next();
+				float beta = edge.angleOppositeVertex();
+				float alpha = edge.getOpposite().angleOppositeVertex();
+				float cotanWeights =  (float) Math.min(1/Math.tan(alpha)+1/Math.tan(beta),1e2);
+				sumOfCotans += cotanWeights;
+				Vertex endVert = edge.end();
+				int col = endVert.index;
+				cotanLaplace.set(row, col, cotanWeights/(2*area));	
+			}
+			cotanLaplace.set(row, row, -sumOfCotans/(2*area));
+		}
+		return cotanLaplace;	
 	}
 	
 	/**

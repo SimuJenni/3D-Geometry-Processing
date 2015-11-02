@@ -42,6 +42,17 @@ public class CSRMatrix {
 		}
 	}
 	
+	/**	
+	 * Constructs an identity matrix of size n
+	 */
+	public static CSRMatrix eye(int n){
+		CSRMatrix eye = new CSRMatrix(n, n);
+		for(int i=0; i<n; i++){
+			eye.set(i, i, 1f);
+		}
+		return eye;
+	}
+	
 	public int nRows(){
 		return rows.size();		
 	}
@@ -236,6 +247,16 @@ public class CSRMatrix {
 		}
 		
 		return mat_T;
+	}
+	
+	/**
+	 * Computes A-B and stores it in this matrix
+	 * @param A
+	 * @param B
+	 */
+	public void sub(CSRMatrix A, CSRMatrix B){
+		B.scale(-1);
+		this.add(A, B);
 	}
 	
 	

@@ -251,6 +251,16 @@ public class Vertex extends HEElement{
 		laplacian.scale(1/(2*computeMixedArea()));
 		return laplacian.length()*0.5f;
 	}
+	
+	public int valence(){
+		Iterator<HalfEdge> edgeIt = this.iteratorVE();
+		int valence = 0;
+		while(edgeIt.hasNext()){
+			edgeIt.next();
+			valence++;
+		}
+		return valence;
+	}
 
 	
 }
