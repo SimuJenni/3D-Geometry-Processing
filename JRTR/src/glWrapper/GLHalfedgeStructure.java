@@ -44,7 +44,7 @@ public class GLHalfedgeStructure extends GLUpdateable {
 		//
 		this.addElement(verts, Semantic.POSITION , 3, "position");
 		//Here the position coordinates are passed a second time to the shader as color
-		this.addElement(verts, Semantic.USERSPECIFIED , 3, "color");
+//		this.addElement(verts, Semantic.USERSPECIFIED , 3, "color");
 		
 		//pass the index array which has to be conformal to the glRenderflag returned, here GL_Triangles
 		this.addIndices(ind);
@@ -146,6 +146,17 @@ public class GLHalfedgeStructure extends GLUpdateable {
 		float[] verts = this.getDataBuffer("position");
 		copyToArrayP3f( halfEdgeStruct.getVertices(), verts);
 		this.scheduleUpdate("position");
+	}
+
+	public void add(HEData3d colors, String string) {
+		float[] color = new float[colors.size()*3];
+		ArrayList<Vertex> verts = this.halfEdgeStruct.getVertices();
+		for(int i=0; i<verts.size(); i++){
+			color[i*3] = colors.get(verts.get(i)).x;
+			color[i*3+1] = colors.get(verts.get(i)).y;
+			color[i*3+2] = colors.get(verts.get(i)).z;
+		}
+		this.addElement(color, Semantic.USERSPECIFIED , 3, "color");
 	}
 
 }

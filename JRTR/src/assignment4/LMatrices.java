@@ -29,9 +29,11 @@ public class LMatrices {
 		int n = verts.size();
 		CSRMatrix unifLaplace = new CSRMatrix(n, n);
 		for(Vertex v:verts){
-			if (v.isOnBoundary()) 
-				continue;
 			int row = v.index;
+			if (v.isOnBoundary()) {
+				unifLaplace.set(row, row, 1);
+				continue;
+			}
 			unifLaplace.set(row, row, -1);
 			Iterator<Vertex> neighborIter = v.iteratorVV();
 			int valence = v.valence();
@@ -54,9 +56,11 @@ public class LMatrices {
 		int n = verts.size();
 		CSRMatrix cotanLaplace = new CSRMatrix(n, n);
 		for(Vertex v:verts){
-			if (v.isOnBoundary()) 
-				continue; 
 			int row = v.index;
+			if (v.isOnBoundary()) {
+				cotanLaplace.set(row, row, 1);
+				continue;
+			}
 			float sumOfCotans = 0;
 			float area = v.computeMixedArea();
 			Iterator<HalfEdge> edgeIt = v.iteratorVE();

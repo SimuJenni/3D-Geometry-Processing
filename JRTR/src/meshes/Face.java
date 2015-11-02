@@ -176,7 +176,7 @@ public class Face extends HEElement {
 		return null;
 	}
 
-	private float area() {
+	public float area() {
 		Vector3f crossVec = new Vector3f();
 		crossVec.cross(anEdge.getVector(), anEdge.next.getVector());
 		return crossVec.length()/2;

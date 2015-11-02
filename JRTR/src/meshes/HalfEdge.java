@@ -127,10 +127,8 @@ public class HalfEdge extends HEElement{
 	}
 
 	public Vector3f getVector() {
-		if(edgeVector==null){
-			edgeVector = new Vector3f(this.end().getPos());
-			edgeVector.sub(this.start().getPos());
-		}
+		edgeVector = new Vector3f(this.end().getPos());
+		edgeVector.sub(this.start().getPos());
 		return edgeVector;
 	}
 

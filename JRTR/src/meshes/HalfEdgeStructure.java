@@ -321,6 +321,14 @@ public float volume(){
 	return vol;
 }
 
+public float surfaceArea(){
+	float area = 0;
+	for(Face f:this.faces){
+		area += f.area();
+	}
+	return area;
+}
+
 public void scale(float factor){
 	for(Vertex v:this.vertices){
 		v.pos.scale(factor);
