@@ -27,8 +27,8 @@ public class Assignment4_1_visual {
 		WireframeMesh m = null;
 
 		try {
-//			m = ObjReader.read("objs/sphere.obj", false);
-			m = ObjReader.read("objs/dragon.obj", false);
+			m = ObjReader.read("objs/sphere.obj", false);
+//			m = ObjReader.read("objs/dragon.obj", false);
 			hs = new HalfEdgeStructure();
 			hs.init(m);
 		} catch (Exception e) {
@@ -36,8 +36,8 @@ public class Assignment4_1_visual {
 			fail();
 		}
 		
-		CSRMatrix laplacian = LMatrices.mixedCotanLaplacian(hs);
-//		CSRMatrix laplacian = LMatrices.uniformLaplacian(hs);
+//		CSRMatrix laplacian = LMatrices.mixedCotanLaplacian(hs);
+		CSRMatrix laplacian = LMatrices.uniformLaplacian(hs);
 
 		ArrayList<Vector3f> normals = new ArrayList<Vector3f>();
 		LMatrices.mult(laplacian, hs, normals);

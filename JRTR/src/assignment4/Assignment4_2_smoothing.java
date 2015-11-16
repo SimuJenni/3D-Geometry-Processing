@@ -46,7 +46,7 @@ public class Assignment4_2_smoothing {
 		CSRMatrix laplacian = LMatrices.mixedCotanLaplacian(hs);
 //		CSRMatrix laplacian = LMatrices.uniformLaplacian(hs);
 
-		float lambda = 0.01f;
+		float lambda = 0f;
 		implicitSmoothing(hs, laplacian, lambda);
 		
 		MyDisplay disp = new MyDisplay();		

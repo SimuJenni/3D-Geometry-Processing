@@ -67,5 +67,15 @@ public class Utils {
 		}
 		return result;
 	}
+
+	public static ArrayList<Float> multArrays(ArrayList<Float> x, ArrayList<Float> y) {
+		ArrayList<Float> result = new ArrayList<Float>();
+		for(int i=0; i<x.size();i++){
+			result.add(x.get(i)*y.get(i));
+		}
+		return result;
+	}
+	
+	
 	
 }

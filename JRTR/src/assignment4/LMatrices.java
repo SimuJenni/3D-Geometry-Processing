@@ -85,7 +85,29 @@ public class LMatrices {
 	 * @return
 	 */
 	public static CSRMatrix symmetricCotanLaplacian(HalfEdgeStructure hs){
-		return null;
+		ArrayList<Vertex> verts = hs.getVertices();
+		int n = verts.size();
+		CSRMatrix symCotan = new CSRMatrix(n, n);
+		for(Vertex v:verts){
+			int row = v.index;
+			float sumOfEntries = 0;
+			float area1 = v.computeMixedArea();
+			Iterator<HalfEdge> edgeIt = v.iteratorVE();
+			while(edgeIt.hasNext()){
+				HalfEdge edge = edgeIt.next();
+				float area2 = edge.end().computeMixedArea();
+				float scale = (float) Math.sqrt(1/(area1*area2));
+				float beta = edge.angleOppositeVertex();
+				float alpha = edge.getOpposite().angleOppositeVertex();
+				float cotanWeights =  (float) Math.min(1/Math.tan(alpha)+1/Math.tan(beta),1e2);
+				sumOfEntries += cotanWeights/(2*scale);
+				Vertex endVert = edge.end();
+				int col = endVert.index;
+				symCotan.set(row, col, cotanWeights/(2*scale));	
+			}
+			symCotan.set(row, row, -sumOfEntries);
+		}
+		return symCotan;		
 	}
 	
 	

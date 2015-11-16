@@ -99,5 +99,27 @@ public class Assignment4_1_Tests {
 		}
 	}
 	
-
+	@Test
+	public void symCotanRowSum() {
+		CSRMatrix symCotan = LMatrices.symmetricCotanLaplacian(hs);
+		ArrayList<ArrayList<col_val>> rows = symCotan.getRows();
+		for(ArrayList<col_val> row:rows){
+			float rowSum = 0;
+			for(col_val col:row){
+				rowSum += col.val;
+			}
+			assertEquals(0, rowSum, 1e-3);
+		}	
+	}
+	
+	@Test
+	public void symCotanSymetry() {
+		CSRMatrix symCotan = LMatrices.symmetricCotanLaplacian(hs);
+		for(int r=0;r<symCotan.nRows();r++){
+			for(int c=r+1;c<symCotan.nCols();c++){
+				assertEquals(symCotan.get(r, c),symCotan.get(c, r),1e-3);
+			}
+		}	
+	}
+	
 }
