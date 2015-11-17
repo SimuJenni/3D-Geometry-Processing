@@ -1,8 +1,17 @@
 package assignment5;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
+import meshes.Face;
 import meshes.HalfEdgeStructure;
+import meshes.Vertex;
 import openGL.objects.Transformation;
 
 
@@ -14,11 +23,20 @@ import openGL.objects.Transformation;
  */
 public class QSlim {
 
-	HalfEdgeStructure hs;
+	private HalfEdgeStructure hs;
+	private HalfEdgeCollapse collapser;
+	private HashMap<Vertex, Transformation> errorMatrices;
 	
 	/********************************************
 	 * Use or discard the skeletton, as you like.
 	 ********************************************/
+	
+	public QSlim(HalfEdgeStructure hs) {
+		this.hs = hs;
+		this.collapser = new HalfEdgeCollapse(hs);
+		this.errorMatrices = new HashMap<Vertex, Transformation>();
+		init();
+	}
 	
 	
 	/**
@@ -27,6 +45,22 @@ public class QSlim {
 	 * Fill up the Priority queue/heap or similar
 	 */
 	private void init(){
+		ArrayList<Vertex> verts = hs.getVertices();
+		for(Vertex v:verts){
+			Transformation Q_tot = new Transformation(new Matrix4f());
+			// Iterate over all adjacent faces
+			Iterator<Face> fItr = v.iteratorVF();
+			while(fItr.hasNext()){
+				Face f = fItr.next();
+				Vector3f p0 = new Vector3f(v.getPos());
+				Vector4f p = new Vector4f(f.normal());
+				p.w = -p0.dot(f.normal());
+				Transformation Q = new Transformation(new Matrix4f());
+				compute_ppT(p,Q);
+				Q_tot.add(Q);
+			}
+			this.errorMatrices.put(v, Q_tot);
+		}
 		
 	}
 	
@@ -82,6 +116,14 @@ public class QSlim {
 		public int compareTo(PotentialCollapse arg1) {
 			return -1;
 		}
+	}
+
+
+
+
+
+	public HashMap<Vertex, Transformation> getErrorMatrices() {
+		return errorMatrices;
 	}
 
 }

@@ -1,14 +1,19 @@
 package assignment5;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import glWrapper.GLWireframeMesh;
 import meshes.HalfEdgeStructure;
+import meshes.Vertex;
 import meshes.WireframeMesh;
 import meshes.reader.ObjReader;
+import openGL.MyDisplay;
+import openGL.objects.Transformation;
 
 
 /**
@@ -24,17 +29,36 @@ public class Assignment5_vis {
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(wf);
 		
+		MyDisplay disp = new MyDisplay();
+		GLWireframeMesh mesh = new GLWireframeMesh(wf);
+		mesh.configurePreferredShader("shaders/trimesh_flat.vert", 
+				"shaders/trimesh_flat.frag", 
+				"shaders/trimesh_flat.geom");
+		disp.addToDisplay(mesh);
 		
-		//visualize the isosurfaces of this bunny_ear	
-		//to compute the eigenvalues of some 3x3 matrix m:
-		//eigs = new float[3];
-		//eigenValues(m, eigs);
-		//
-		//to compute the eigenvector for an eigenvalue eigs[i] 
-			//(yes, THE eigenvector, the method will fail if an eigenspace
-			//has higher dimension than 1. This does not happen on the bunny ear.
-			//Feel free to improve/use a different method :- ) )
-		//eigenVector(m, eigs[i]);
+		QSlim qs = new QSlim(hs);
+		float eps = 0.04f;
+		HashMap<Vertex, Transformation> errMats = qs.getErrorMatrices();
+		for(Vertex v:hs.getVertices()){
+			Transformation errorMat = errMats.get(v);
+			float[] eigs = new float[3];
+			Matrix3f m = new Matrix3f(errorMat.m00,errorMat.m01,errorMat.m02,
+									  errorMat.m10,errorMat.m11,errorMat.m12,
+									  errorMat.m20,errorMat.m21,errorMat.m22);
+			eigenValues(m, eigs);
+			Vector3f eigV1 = eigenVector(m, eigs[0]);
+			Vector3f eigV2 = eigenVector(m, eigs[1]);
+			Vector3f eigV3 = eigenVector(m, eigs[2]);
+			WireframeMesh ellipsWM = ellipsoid(v.getPos(),eigV1, (float) (eps/Math.sqrt(eigs[0])),
+					eigV2,  (float) (eps/Math.sqrt(eigs[1])), eigV3,  (float) (eps/Math.sqrt(eigs[2])));
+
+			GLWireframeMesh meshy = new GLWireframeMesh(ellipsWM);
+			meshy.configurePreferredShader("shaders/trimesh_flat.vert", 
+					"shaders/trimesh_flat.frag", 
+					"shaders/trimesh_flat_red.geom");
+			disp.addToDisplay(meshy);
+		}
+		
 	}
 
 

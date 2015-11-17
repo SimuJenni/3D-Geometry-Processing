@@ -15,9 +15,24 @@ public class assignment5_1 {
 		WireframeMesh wf = ObjReader.read("objs/dragon.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(wf);
+
+		smallEdgeCollapse(hs, 0.02f);
 		
+		MyDisplay disp = new MyDisplay();
+		
+		GLHalfedgeStructure mesh = new GLHalfedgeStructure(hs);
+		
+		mesh.configurePreferredShader("shaders/trimesh_flat.vert", 
+				"shaders/trimesh_flat.frag", 
+				"shaders/trimesh_flat.geom");
+		disp.addToDisplay(mesh);
+	}
+
+	/*
+	 * Collapses all edges smaller than epsilon in the HalfEdgeStructure hs
+	 */
+	private static void smallEdgeCollapse(HalfEdgeStructure hs, float epsilon) {
 		HalfEdgeCollapse collapser = new HalfEdgeCollapse(hs);
-		float epsilon = 0.02f;
 		boolean converged = false;
 		int iter = 1;
 		int maxIter = 10;
@@ -41,15 +56,6 @@ public class assignment5_1 {
 			converged = count==0 || iter>=maxIter;
 			iter++;
 		}
-		
-		MyDisplay disp = new MyDisplay();
-		
-		GLHalfedgeStructure mesh = new GLHalfedgeStructure(hs);
-		
-		mesh.configurePreferredShader("shaders/trimesh_flat.vert", 
-				"shaders/trimesh_flat.frag", 
-				"shaders/trimesh_flat.geom");
-		disp.addToDisplay(mesh);
 	}
 
 }
