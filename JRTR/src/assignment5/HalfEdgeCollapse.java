@@ -1,5 +1,6 @@
 package assignment5;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -72,8 +73,6 @@ public class HalfEdgeCollapse {
 	}
 
 
-	
-
 	/**
 	 * collapse a single halfedge, but don't remove the dead halfedges faces and vertices from the
 	 * halfedges structure.
@@ -81,17 +80,62 @@ public class HalfEdgeCollapse {
 	 * @param hs
 	 */
 	void collapseEdge(HalfEdge e){
+						
+		Vertex start = e.start();
+		Vertex end = e.end();
+		HalfEdge opE = e.getOpposite();	
 		
+//		assertAllIsWell(hs);		
 		
 		//First step:
 		//relink the vertices to safe edges. don't iterate 
 		//around e.end() before the collapse is finished.
 		makeV2ERefSafe(e);
 		
+//		assertAllIsWell(hs);	
 		
-		//your code goes here....
+		Iterator<HalfEdge> eItr = start.iteratorVE();
+		
+		// Assign new end vertex to all attached edges
+		ArrayList<HalfEdge> visitedEdges = new ArrayList<HalfEdge>();
+		while(eItr.hasNext()){
+			HalfEdge edge = eItr.next();
+			edge.getOpposite().setEnd(end);
+			visitedEdges.add(edge);
+		}
+		
+		// Correct the opposites of edges belonging to collapsed faces
+		if(e.hasFace()){
+			e.getNext().getOpposite().setOpposite(e.getPrev().getOpposite());
+			e.getPrev().getOpposite().setOpposite(e.getNext().getOpposite());
+			e.getNext().getOpposite().setEnd(end);
+		} else {
+			e.getNext().setPrev(e.getPrev());
+			e.getPrev().setNext(e.getNext());
+		}
+		
+		if(opE.hasFace()){
+			opE.getNext().getOpposite().setOpposite(opE.getPrev().getOpposite());
+			opE.getPrev().getOpposite().setOpposite(opE.getNext().getOpposite());
+			opE.getNext().getOpposite().setEnd(end);
+		} else {
+			opE.getNext().setPrev(opE.getPrev());
+			opE.getPrev().setNext(opE.getNext());
+		}
 		
 		
+		// Tag obsolete stuff
+		this.deadVertices.add(start);
+		this.deadEdges.add(opE);
+		this.deadEdges.add(e);
+		if(e.hasFace()){
+			deleteFace(e.getFace());
+		}
+		if(opE.hasFace()){
+			deleteFace(opE.getFace());
+		}	
+		
+//		assertAllIsWell(hs);		
 		
 		//Do a lot of assertions while debugging, either here
 		//or in the calling method... ;-)
@@ -100,7 +144,20 @@ public class HalfEdgeCollapse {
 
 	}
 	
+	private void assertAllIsWell(HalfEdgeStructure hs){
+		this.assertEdgesOk(hs);
+		this.assertVerticesOk(hs);
+		this.assertVerticesDontRefZombies(hs.getVertices());
+	}
 	
+	private void deleteFace(Face f){
+		Iterator<HalfEdge> fItr = f.iteratorFE();
+		while(fItr.hasNext()){
+			HalfEdge e = fItr.next();
+			deadEdges.add(e);
+		}
+		deadFaces.add(f);
+	}
 	
 
 	/**
@@ -123,7 +180,6 @@ public class HalfEdgeCollapse {
 		hs.getVertices().removeAll(deadVertices);
 		hs.getHalfEdges().removeAll(deadEdges);
 		hs.enumerateVertices();
-		
 		
 		assertEdgesOk(hs);
 		assertVerticesOk(hs);
@@ -267,7 +323,6 @@ public class HalfEdgeCollapse {
 		}
 	}
 	
-
 	
 	/**
 	 * is v obsolete?
@@ -298,11 +353,13 @@ public class HalfEdgeCollapse {
 
 	/**
 	 * Valueable assertion
-	 * @param vs
+	 * @param arrayList
 	 */
-	private void assertVerticesDontRefZombies(Vertex... vs ) {
-		for(Vertex v : vs){
-			assert(!deadEdges.contains(v.getHalfEdge()));
+	private void assertVerticesDontRefZombies(ArrayList<Vertex> arrayList ) {
+		for(Vertex v : arrayList){
+			if(!deadVertices.contains(v)){
+				assert(!deadEdges.contains(v.getHalfEdge()));
+			}
 		}
 	}
 	

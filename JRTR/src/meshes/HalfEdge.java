@@ -143,5 +143,9 @@ public class HalfEdge extends HEElement{
 	public Vertex oppositeVertx() {
 		return getNext().end();
 	}
+	
+	public float getLength(){
+		return getVector().length();
+	}
 
 }

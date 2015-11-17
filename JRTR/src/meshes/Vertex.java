@@ -145,28 +145,20 @@ public class Vertex extends HEElement{
 	
 	public final class IteratorVV implements Iterator<Vertex> {
 		
-		private HalfEdge first, actual;
+		private IteratorVE iter;
 
 		public IteratorVV(HalfEdge anEdge) {
-			first = anEdge;
-			actual = null;
+			iter = new IteratorVE(anEdge);
 		}
 
 		@Override
 		public boolean hasNext() {
-			return actual == null || actual.opposite.next != first;
+			return iter.hasNext();
 		}
 
 		@Override
 		public Vertex next() {
-			if(!hasNext()){
-				throw new NoSuchElementException();
-			}
-			actual = (actual == null?
-					first:
-					actual.opposite.next);
-				
-			return actual.end();
+			return iter.next().end();
 		}
 
 		@Override
@@ -175,7 +167,7 @@ public class Vertex extends HEElement{
 		}
 
 		public Face face() {
-			return first.incident_f;
+			return iter.face();
 		}
 	}
 	

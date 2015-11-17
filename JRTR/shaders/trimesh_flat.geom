@@ -26,7 +26,11 @@ void main()
 	normal_g = normalize(cross(position_g[1].xyz - position_g[0].xyz,
 					position_g[2].xyz - position_g[0].xyz));
 	//use a constant color
-	color_g = vec4(0.2f,0.2f,0.8f,1.f);
+    if(sign(dot(normal_g, vec3(0,0,1)))>0){
+        color_g = vec4(0.2f,0.2f,0.8f,1.f);
+    } else {
+        color_g = vec4(0.8f,0.2f,0.2f,1.f);
+    }
 	
 	for(int i=0; i<3; i++)
 	{
