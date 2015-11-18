@@ -36,7 +36,7 @@ public class Assignment5_vis {
 				"shaders/trimesh_flat.geom");
 		disp.addToDisplay(mesh);
 		
-		QSlim qs = new QSlim(hs);
+		QSlim qs = new QSlim(hs, false);
 		float eps = 0.04f;
 		HashMap<Vertex, Transformation> errMats = qs.getErrorMatrices();
 		for(Vertex v:hs.getVertices()){

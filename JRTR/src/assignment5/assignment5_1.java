@@ -2,6 +2,8 @@ package assignment5;
 
 import java.util.Iterator;
 
+import javax.vecmath.Point3f;
+
 import glWrapper.GLHalfedgeStructure;
 import meshes.HalfEdge;
 import meshes.HalfEdgeStructure;
@@ -47,7 +49,14 @@ public class assignment5_1 {
 					continue;
 				}
 				else if(edge.getLength()<epsilon){
-					collapser.collapseEdge(edge);
+					// Using edge-middle for collapse
+					Point3f newPos = new Point3f(edge.getVector());
+					newPos.scaleAdd(-0.5f, edge.end().getPos());
+					collapser.collapseEdge(edge, newPos);
+					
+//					// Using edge end for collapse
+//					collapser.collapseEdge(edge, edge.end().getPos());
+					
 					count++;
 				}
 			}

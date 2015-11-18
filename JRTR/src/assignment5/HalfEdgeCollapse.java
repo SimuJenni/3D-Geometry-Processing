@@ -79,21 +79,18 @@ public class HalfEdgeCollapse {
 	 * @param e
 	 * @param hs
 	 */
-	void collapseEdge(HalfEdge e){
+	void collapseEdge(HalfEdge e, Point3f targetPos){
 						
 		Vertex start = e.start();
 		Vertex end = e.end();
+		end.setPos(targetPos);
 		HalfEdge opE = e.getOpposite();	
-		
-//		assertAllIsWell(hs);		
-		
+				
 		//First step:
 		//relink the vertices to safe edges. don't iterate 
 		//around e.end() before the collapse is finished.
 		makeV2ERefSafe(e);
-		
-//		assertAllIsWell(hs);	
-		
+				
 		Iterator<HalfEdge> eItr = start.iteratorVE();
 		
 		// Assign new end vertex to all attached edges
@@ -134,9 +131,7 @@ public class HalfEdgeCollapse {
 		if(opE.hasFace()){
 			deleteFace(opE.getFace());
 		}	
-		
-//		assertAllIsWell(hs);		
-		
+				
 		//Do a lot of assertions while debugging, either here
 		//or in the calling method... ;-)
 		//If something is wrong in the half-edge structure it is awful
@@ -167,7 +162,7 @@ public class HalfEdgeCollapse {
 	 * @param hs
 	 */
 	public void collapseEdgeAndDelete(HalfEdge e){
-		collapseEdge(e);
+		collapseEdge(e, e.end().getPos());
 		finish();
 	}
 	
