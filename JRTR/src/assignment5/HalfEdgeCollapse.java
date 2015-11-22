@@ -79,8 +79,9 @@ public class HalfEdgeCollapse {
 	 * @param e
 	 * @param hs
 	 */
-	void collapseEdge(HalfEdge e, Point3f targetPos){
+	void collapseEdge(HalfEdge e, Point3f target){
 						
+		Point3f targetPos = new Point3f(target);
 		Vertex start = e.start();
 		Vertex end = e.end();
 		end.setPos(targetPos);
@@ -103,40 +104,35 @@ public class HalfEdgeCollapse {
 		
 		// Correct the opposites of edges belonging to collapsed faces
 		if(e.hasFace()){
-			e.getNext().getOpposite().setOpposite(e.getPrev().getOpposite());
-			e.getPrev().getOpposite().setOpposite(e.getNext().getOpposite());
-			e.getNext().getOpposite().setEnd(end);
+			relinkOppositeEdges(e, end);
+			deleteFace(e.getFace());
 		} else {
-			e.getNext().setPrev(e.getPrev());
-			e.getPrev().setNext(e.getNext());
+			relinkEdgesOnBoundary(e);
 		}
 		
 		if(opE.hasFace()){
-			opE.getNext().getOpposite().setOpposite(opE.getPrev().getOpposite());
-			opE.getPrev().getOpposite().setOpposite(opE.getNext().getOpposite());
-			opE.getNext().getOpposite().setEnd(end);
+			relinkOppositeEdges(opE, end);
+			deleteFace(opE.getFace());
 		} else {
-			opE.getNext().setPrev(opE.getPrev());
-			opE.getPrev().setNext(opE.getNext());
+			relinkEdgesOnBoundary(opE);
 		}
 		
 		
 		// Tag obsolete stuff
 		this.deadVertices.add(start);
-		this.deadEdges.add(opE);
-		this.deadEdges.add(e);
-		if(e.hasFace()){
-			deleteFace(e.getFace());
-		}
-		if(opE.hasFace()){
-			deleteFace(opE.getFace());
-		}	
 				
-		//Do a lot of assertions while debugging, either here
-		//or in the calling method... ;-)
-		//If something is wrong in the half-edge structure it is awful
-		//to detect what it is that is wrong...
+	}
 
+
+	private void relinkEdgesOnBoundary(HalfEdge e) {
+		e.getPrev().setNext(e.getNext());
+		e.getNext().setPrev(e.getPrev());
+	}
+
+
+	private void relinkOppositeEdges(HalfEdge e, Vertex end) {
+		e.getNext().getOpposite().setOpposite(e.getPrev().getOpposite());
+		e.getPrev().getOpposite().setOpposite(e.getNext().getOpposite());
 	}
 	
 	private void assertAllIsWell(HalfEdgeStructure hs){

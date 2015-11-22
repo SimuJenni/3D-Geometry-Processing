@@ -63,30 +63,32 @@ public class QSlim {
 		
 		// Compute all potential collapses with costs
 		for(HalfEdge edge:hs.getHalfEdges()){
-			PotentialCollapse pC = createPotentialCollapse(edge);
-			this.potCollaps.add(pC);
-			this.collapseLookup.put(edge, pC);
+			createPotentialCollapse(edge);
+
 		}
 		
 	}
 
 
-	private PotentialCollapse createPotentialCollapse(HalfEdge edge) {
-		
+	private void createPotentialCollapse(HalfEdge edge) {
 		// Compute associated cost
 		Transformation Q = new Transformation(this.errorMatrices.get(edge.start()));
-		Transformation Qw = this.errorMatrices.get(edge.end());
-		Q.add(Qw);
+		Q.add(errorMatrices.get(edge.start()), errorMatrices.get(edge.end()));
 		
 		Point3f target = computeTarget(edge, Q, this.optimal);
 		float cost = computeCost(Q, target);
-		
-		if(cost<0) {
-			target = computeTarget(edge, Q, false);
-			cost = 0;
+		PotentialCollapse collapse = new PotentialCollapse(edge, cost, target);
+		collapse.Q = Q;
+		updateCollapse(collapse);
+	}
+
+
+	private void updateCollapse(PotentialCollapse pC) {
+		if(collapseLookup.containsKey(pC.edge)){
+			collapseLookup.get(pC.edge).isDeleted = true;
 		}
-		PotentialCollapse pC = new PotentialCollapse(edge, cost, target);
-		return pC;
+		potCollaps.add(pC);
+		collapseLookup.put(pC.edge, pC);
 	}
 
 
@@ -97,15 +99,15 @@ public class QSlim {
 		p2.w = 1;
 		Q.transform(p1);
 		float cost = p1.dot(p2);
-		return cost;
+		return Math.abs(cost);
 	}
 
 
 	private Point3f computeTarget(HalfEdge edge, Transformation Q, boolean opt) {
 		// Compute target position
 		Point3f target = new Point3f();
-		Matrix4f M = new Matrix4f(Q);
-		M.setRow(3,0f,0f,0f,1f);
+		Transformation M = new Transformation(Q);
+		M.setRow(3,0,0,0,1);
 		if(opt && Math.abs(M.determinant())>0.001f){
 			// Optimal position
 			M.invert();
@@ -119,18 +121,16 @@ public class QSlim {
 		return target;
 	}
 
-
-
 	private Transformation computeVertexMatrix(Vertex v) {
-		Transformation Q_tot = new Transformation(new Matrix4f());
+		Transformation Q_tot = new Transformation();
 		// Iterate over all adjacent faces
 		Iterator<Face> fItr = v.iteratorVF();
 		while(fItr.hasNext()){
 			Face f = fItr.next();
 			Vector3f p0 = new Vector3f(f.normal());
-			Point4f p = new Point4f(f.normal());
-			p.w = -p0.dot(new Vector3f(f.getHalfEdge().end().getPos()));
-			Transformation Q = new Transformation(new Matrix4f());
+			Point4f p = new Point4f(p0);
+			p.w = -p0.dot(new Vector3f(v.getPos()));
+			Transformation Q = new Transformation();
 			compute_ppT(p,Q);
 			Q_tot.add(Q);
 		}
@@ -168,15 +168,15 @@ public class QSlim {
 		boolean collapseFound = false;
 		while(!collapseFound ){
 			// Get highest priority collapse
-			collapse = this.potCollaps.remove();
-			if(collapse.isDeleted || collapser.isEdgeDead(collapse.edge) || !HalfEdgeCollapse.isEdgeCollapsable(collapse.edge)){
+			collapse = this.potCollaps.poll();
+			HalfEdge e = collapse.edge;
+			if(collapse.isDeleted || collapser.isEdgeDead(e)){
 				continue;
 			} else
 			// Check if collapse is okay and reinsert with higher cost if not
-			if(!collapse.updated && collapser.isCollapseMeshInv(collapse.edge, collapse.target)){
-				collapse.cost = (collapse.cost+0.1f)*10;
-				this.potCollaps.add(collapse);
-				collapse.updated = true;
+			if(collapser.isCollapseMeshInv(e, collapse.target) || !HalfEdgeCollapse.isEdgeCollapsable(e)){
+				PotentialCollapse newCollapse = new PotentialCollapse(e, (Math.abs(collapse.cost) + 0.1f)*10, collapse.target);
+				updateCollapse(newCollapse);
 			} else {
 				collapseFound = true;
 			}
@@ -186,29 +186,14 @@ public class QSlim {
 						
 		// Update error-matrix
 		Vertex vEnd = collapse.edge.end();
-		Vertex vStart = collapse.edge.start();
-		Transformation Q = this.errorMatrices.get(vEnd);
-		Q.add(errorMatrices.get(vStart));
+		errorMatrices.put(vEnd, collapse.Q);
 		
 		// Update all adjacent edges
 		Iterator<HalfEdge> edgeItr = vEnd.iteratorVE();
 		while(edgeItr.hasNext()){
 			HalfEdge e = edgeItr.next();
-			// Mark as deleted and insert updated edges later
-			this.collapseLookup.get(e).isDeleted = true;
-			this.collapseLookup.get(e.getOpposite()).isDeleted = true;
-			if(e.equals(collapse.edge) || e.getOpposite().equals(collapse.edge)){
-				// Don't want to reenter collapsed edge
-				continue;
-			} else {
-				// Update the cost of all other edges
-				PotentialCollapse pC = createPotentialCollapse(e);
-				this.potCollaps.add(pC);
-				this.collapseLookup.put(e, pC);
-				pC = createPotentialCollapse(e.getOpposite());
-				this.potCollaps.add(pC);
-				this.collapseLookup.put(e.getOpposite(), pC);
-			}
+			createPotentialCollapse(e);
+			createPotentialCollapse(e.getOpposite());	
 		}
 	}
 	
@@ -235,7 +220,7 @@ public class QSlim {
 	 */
 	protected class PotentialCollapse implements Comparable<PotentialCollapse> {
 		
-		public boolean updated;
+		public Transformation Q;
 		private HalfEdge edge;
 		private float cost;
 		private Point3f target;
@@ -251,7 +236,7 @@ public class QSlim {
 
 		@Override
 		public int compareTo(PotentialCollapse other) {
-			return this.cost<=other.cost ? -1 : 1;
+			return (int) Math.signum(this.cost - other.cost);
 		}
 		
 		public String toString(){

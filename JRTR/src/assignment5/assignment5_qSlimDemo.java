@@ -20,8 +20,8 @@ public class assignment5_qSlimDemo {
 		QSlim qs1 = new QSlim(hs1, false);
 		QSlim qs2 = new QSlim(hs2, true);
 
-		qs1.simplify(10000);
-		qs2.simplify(10000);
+		qs1.simplify(1500);
+		qs2.simplify(1500);
 
 		
 		MyDisplay disp = new MyDisplay();
