@@ -97,12 +97,12 @@ public class DeformationPickingProcessor implements PickingProcessor{
 	 * @throws InterruptedException 
 	 */
 	private synchronized void deform_raps() throws InterruptedException {
-
-		
-		hs_visualization.updatePosition();
 		
 		//do the deformation magic / delegate it to the modeler...
-		System.out.println("RAPS callback ...");
+		hs_visualization.updatePosition();
+		this.modeler.deform(3);
+		hs_visualization.updatePosition();
+
 	}
 	
 	
@@ -160,7 +160,7 @@ public class DeformationPickingProcessor implements PickingProcessor{
 			
 		}
 		
-		hs_visualization.updatePosition();
+//		hs_visualization.updatePosition();
 
 		
 	}
@@ -182,7 +182,7 @@ public class DeformationPickingProcessor implements PickingProcessor{
 			bgTask.execute();			
 		}
 		
-		hs_visualization.updatePosition();
+//		hs_visualization.updatePosition();
 	}
 
 	

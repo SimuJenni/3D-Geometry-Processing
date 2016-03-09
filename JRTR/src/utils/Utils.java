@@ -76,6 +76,14 @@ public class Utils {
 		return result;
 	}
 	
+	public static ArrayList<Float> addArrays(ArrayList<Float> x, ArrayList<Float> y) {
+		ArrayList<Float> result = new ArrayList<Float>(x.size());
+		for(int i=0; i<x.size();i++){
+			result.add(x.get(i)+y.get(i));
+		}
+		return result;
+	}
+	
 	
 	
 }

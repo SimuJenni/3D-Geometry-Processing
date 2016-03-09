@@ -33,7 +33,7 @@ public class Assignment6_interactive {
 		
 		//if your setup is correct a psychedelic bunny should be displayed
 		//demonstrates the use of the updateable glHalfEdgeStructure
-		//interactivityDemo();
+//		interactivityDemo();
 		
 		//start the picking display. If your setup is correct you should be able
 		// to pick and move mesh parts
@@ -67,7 +67,7 @@ public class Assignment6_interactive {
 		MyPickingDisplay disp = new MyPickingDisplay();
 		
 		//read mesh
-		WireframeMesh wf = ObjReader.read("objs/bunny.obj", true);
+		WireframeMesh wf = ObjReader.read("objs/bunny5k.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		hs.init(wf);
 

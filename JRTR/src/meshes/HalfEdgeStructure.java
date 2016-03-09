@@ -61,7 +61,6 @@ public class HalfEdgeStructure {
 		}
 		HashMap<HalfEdge, HalfEdge> e2e = new HashMap<>();
 		for(HalfEdge e: hs.getHalfEdges()){
-			
 			HalfEdge newE = new HalfEdge(f2f.get(e.getFace()), v2v.get(e.end()));
 			e2e.put(e, newE);
 			edges.add(newE);
@@ -87,7 +86,7 @@ public class HalfEdgeStructure {
 			newHE.setOpposite(e2e.get(e.opposite));
 		}
 		
-		this.enumerateVertices();
+		this.enumerateVerticesAndEdges();
 	}
 
 
@@ -253,7 +252,7 @@ public class HalfEdgeStructure {
 		}
 		
 		
-		this.enumerateVertices();
+		this.enumerateVerticesAndEdges();
 		
 	}
 	
@@ -280,11 +279,16 @@ public class HalfEdgeStructure {
 /**
  * Assign consecutive values 0...vertices.size()-1 to the Vertex.index fields.
  */
-	public void enumerateVertices() {
+	public void enumerateVerticesAndEdges() {
 		int idx =0;
 		for(Vertex v: vertices){
 			v.index= idx++;
 		}
+		idx = 0;
+		for(HalfEdge e:edges){
+			e.setIndex(idx++);
+		}
+		
 	}
 
 

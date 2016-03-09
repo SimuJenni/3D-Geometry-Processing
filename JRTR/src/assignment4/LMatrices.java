@@ -66,9 +66,7 @@ public class LMatrices {
 			Iterator<HalfEdge> edgeIt = v.iteratorVE();
 			while(edgeIt.hasNext()){
 				HalfEdge edge = edgeIt.next();
-				float beta = edge.angleOppositeVertex();
-				float alpha = edge.getOpposite().angleOppositeVertex();
-				float cotanWeights =  (float) Math.min(1/Math.tan(alpha)+1/Math.tan(beta),1e2);
+				float cotanWeights =  edge.computeCotanWeights();
 				sumOfCotans += cotanWeights;
 				Vertex endVert = edge.end();
 				int col = endVert.index;
@@ -78,6 +76,36 @@ public class LMatrices {
 		}
 		return cotanLaplace;	
 	}
+	
+	/**
+	 * The unnormolized cotangent Laplacian
+	 * @param hs
+	 * @return
+	 */
+	public static CSRMatrix unnormalizedCotanLaplacian(HalfEdgeStructure hs){
+		ArrayList<Vertex> verts = hs.getVertices();
+		int n = verts.size();
+		CSRMatrix cotanLaplace = new CSRMatrix(n, n);
+		for(Vertex v:verts){
+			int row = v.index;
+			if (v.isOnBoundary()) {
+				continue;
+			}
+			float sumOfCotans = 0;
+			Iterator<HalfEdge> edgeIt = v.iteratorVE();
+			while(edgeIt.hasNext()){
+				HalfEdge edge = edgeIt.next();
+				float cotanWeights =  edge.computeCotanWeights();
+				sumOfCotans += cotanWeights;
+				Vertex endVert = edge.end();
+				int col = endVert.index;
+				cotanLaplace.set(row, col, cotanWeights);	
+			}
+			cotanLaplace.set(row, row, -sumOfCotans);
+		}
+		return cotanLaplace;	
+	}
+	
 	
 	/**
 	 * A symmetric cotangent Laplacian, cf Assignment 4, exercise 4.
@@ -97,9 +125,7 @@ public class LMatrices {
 				HalfEdge edge = edgeIt.next();
 				float area2 = edge.end().computeMixedArea();
 				float scale = (float) Math.sqrt(1/(area1*area2));
-				float beta = edge.angleOppositeVertex();
-				float alpha = edge.getOpposite().angleOppositeVertex();
-				float cotanWeights =  (float) Math.min(1/Math.tan(alpha)+1/Math.tan(beta),1e2);
+				float cotanWeights =  edge.computeCotanWeights();
 				sumOfEntries += cotanWeights/(2*scale);
 				Vertex endVert = edge.end();
 				int col = endVert.index;

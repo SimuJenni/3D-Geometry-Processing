@@ -1,5 +1,7 @@
 package sparse;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -8,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import assignment4.LMatrices;
 import sparse.CSRMatrix.col_val;
 
 
@@ -479,6 +482,14 @@ public class CSRMatrix {
 		public String toString(){
 			return "("+ this.col + "," + this.val + ") ";
 		}
+	}
+	
+	public void assertSymetric() {
+		for(int r=0;r<this.nRows();r++){
+			for(int c=r+1;c<this.nCols();c++){
+				assertEquals(this.get(r, c),this.get(c, r),1e-3);
+			}
+		}	
 	}
 
 /* ********************************************************************************/

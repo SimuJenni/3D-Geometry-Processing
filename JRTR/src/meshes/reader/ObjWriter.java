@@ -35,7 +35,7 @@ public class ObjWriter {
 	
 	public static void write(HalfEdgeStructure hs, String file) throws IOException {
 		FileWriter fw = new FileWriter("./out/"+file);
-		hs.enumerateVertices();
+		hs.enumerateVerticesAndEdges();
 		for(Vertex v: hs.getVertices()){
 			fw.write("v " + v.getPos().x + " " 
 						+ v.getPos().y + " " 

@@ -170,7 +170,7 @@ public class HalfEdgeCollapse {
 		hs.getFaces().removeAll(deadFaces);
 		hs.getVertices().removeAll(deadVertices);
 		hs.getHalfEdges().removeAll(deadEdges);
-		hs.enumerateVertices();
+		hs.enumerateVerticesAndEdges();
 		
 		assertEdgesOk(hs);
 		assertVerticesOk(hs);

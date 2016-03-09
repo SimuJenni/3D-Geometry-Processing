@@ -22,6 +22,8 @@ public class HalfEdge extends HEElement{
 	
 	private Vector3f edgeVector;
 	
+	private int index;
+	
 	/**
 	 * Initialize a half-edge with the Face it belongs to (the face it is
 	 * positively oriented for) and the vertex it points to 
@@ -146,6 +148,21 @@ public class HalfEdge extends HEElement{
 	
 	public float getLength(){
 		return getVector().length();
+	}
+	
+	public float computeCotanWeights() {
+		float beta = this.angleOppositeVertex();
+		float alpha = this.getOpposite().angleOppositeVertex();
+		float cotanWeights =  (float) Math.min(1/Math.tan(alpha)+1/Math.tan(beta),1e2);
+		return cotanWeights;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 
 }
